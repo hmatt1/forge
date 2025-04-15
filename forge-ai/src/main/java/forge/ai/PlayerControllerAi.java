@@ -478,6 +478,7 @@ public class PlayerControllerAi extends PlayerController {
         if (attackers.size() > cards.size()) {
             chosenAttackers = chosenAttackers.subList(0, cards.size());
         }
+
         // TODO check if not needed as defender
         return chosenAttackers;
     }

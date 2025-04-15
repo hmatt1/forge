@@ -1451,6 +1451,7 @@ public class AiController {
         for (final Card element : combat.getAttackers()) {
             // tapping of attackers happens after Propaganda is paid for
             Log.debug("Computer just assigned " + element.getName() + " as an attacker.");
+            System.out.println("[MJH] AI just assigned " + element.getName() + " as an attacker.");
         }
     }
 

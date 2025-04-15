@@ -17,6 +17,7 @@ public class LobbyPlayerAi extends LobbyPlayer implements IGameEntitiesFactory {
 
     public LobbyPlayerAi(String name, Set<AIOption> options) {
         super(name);
+        System.out.println("[MJH] Creating AI player " + name);
         if (options != null && options.contains(AIOption.USE_SIMULATION)) {
             this.useSimulation = true;
         }

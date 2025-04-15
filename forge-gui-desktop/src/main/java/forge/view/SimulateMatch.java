@@ -341,11 +341,14 @@ public class SimulateMatch {
         return null;
     }
 
+    // TODO fix command line parsing https://github.com/Card-Forge/forge/wiki/ai
     private static Deck deckFromCommandLineParameter(String deckname, GameType type) {
         int dotpos = deckname.lastIndexOf('.');
         if (dotpos > 0 && dotpos == deckname.length() - 4) {
             String baseDir = type.equals(GameType.Commander) ?
                     ForgeConstants.DECK_COMMANDER_DIR : ForgeConstants.DECK_CONSTRUCTED_DIR;
+
+            baseDir = "C:\\Users\\Matt\\IdeaProjects\\decks\\";
 
             File f = new File(baseDir + deckname);
             if (!f.exists()) {
