@@ -22,9 +22,9 @@
 #>
 
 # --- Configuration ---
-$numberOfDecks = 4
-$repetitionsPerMatchup = 2 # <<< ADJUST BACK TO 33 (or keep low for testing)
-$maxConcurrentJobs = 4
+$numberOfDecks = 10
+$repetitionsPerMatchup = 33
+$maxConcurrentJobs = 8
 $deckBaseName = "_WOE_PremierDraft___"
 $deckMiddlePattern = "{0:D2}" # {0:D2} formats number with leading zero (01, 02, ...)
 $deckExtension = "___WG.dck"
