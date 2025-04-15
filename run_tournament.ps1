@@ -22,12 +22,9 @@
 #>
 
 # --- Configuration ---
-$numberOfDecks = 10
-$repetitionsPerMatchup = 33
+$repetitionsPerMatchup = 1
 $maxConcurrentJobs = 8
-$deckBaseName = "_WOE_PremierDraft___"
-$deckMiddlePattern = "{0:D2}" # {0:D2} formats number with leading zero (01, 02, ...)
-$deckExtension = "___WG.dck"
+$deckExtension = ".dck"
 $runScriptPath = ".\run.ps1" # Make sure this path is correct
 $csvOutputPath = ".\TournamentResults.csv"
 $logDirectory = ".\JobOutputs" # *** NEW: Directory for individual job logs ***
@@ -51,14 +48,19 @@ Write-Host "---"
 
 # --- Generate Deck Names ---
 $deckNames = @()
-for ($i = 1; $i -le $numberOfDecks; $i++) {
-    $deckNumberStr = $deckMiddlePattern -f $i
-    $deckNames += "$($deckBaseName)$($deckNumberStr)$($deckExtension)"
-}
+$deckNames += "Deck_01$deckExtension"
+$deckNames += "Deck_08$deckExtension"
+$deckNames += "Deck_22$deckExtension"
+$deckNames += "Deck_41$deckExtension"
+$deckNames += "Deck_50$deckExtension"
+$deckNames += "Deck_100$deckExtension"
+$deckNames += "Deck_141$deckExtension"
+$deckNames += "Deck_146$deckExtension"
+$deckNames += "Deck_200$deckExtension"
 
-Write-Host "Generated Deck Names:"
+Write-Host "Deck Names:"
 $deckNames | ForEach-Object { Write-Host "- $_" }
-Write-Host "---"
+Write-Host "-----------"
 
 # --- Generate All Games to Run ---
 $allGames = [System.Collections.Generic.List[object]]::new()
@@ -147,10 +149,10 @@ foreach ($game in $allGames) {
                 if ($winnerLine)
                 {
                     $winner = $winnerLine
-                    $match = [regex]::Match($winnerLine, '#(\d+) - WG') # Adjust regex if needed
+                    $match = [regex]::Match($winnerLine, '(Deck_\d+)') # Adjust regex if needed
                     if ($match.Success)
                     {
-                        $winner = "$($deckBaseName)$($match.Groups[1].Value)$($deckExtension)"
+                        $winner = "$($match.Groups[1].Value)$($deckExtension)"
                     }
                     else
                     {
@@ -243,10 +245,10 @@ while ($activeJobInfoList.Count -gt 0) {
                     if ($winnerLine)
                     {
                         $winner = $winnerLine
-                        $match = [regex]::Match($winnerLine, '#(\d+) - WG') # Adjust regex if needed
+                        $match = [regex]::Match($winnerLine, '(Deck_\d+)') # Adjust regex if needed
                         if ($match.Success)
                         {
-                            $winner = "$($deckBaseName)$($match.Groups[1].Value)$($deckExtension)"
+                            $winner = "$($match.Groups[1].Value)$($deckExtension)"
                         }
                         else
                         {
