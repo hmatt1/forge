@@ -97,7 +97,7 @@ public class GauntletIO {
     }
 
     public static GauntletData loadGauntlet(final File xmlSaveFile) {
-        boolean isCorrupt = false;
+        boolean isCorrupt = true;
         try (GZIPInputStream zin = new GZIPInputStream(Files.newInputStream(xmlSaveFile.toPath()));
              InputStreamReader reader = new InputStreamReader(zin)) {
             final GauntletData data = (GauntletData)GauntletIO.getSerializer(true).fromXML(reader);

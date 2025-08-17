@@ -22,12 +22,12 @@
 #>
 
 # --- Configuration ---
-$repetitionsPerMatchup = 1
+$repetitionsPerMatchup = 2
 $maxConcurrentJobs = 8
 $deckExtension = ".dck"
 $runScriptPath = ".\run.ps1" # Make sure this path is correct
-$csvOutputPath = ".\TournamentResults.csv"
-$logDirectory = ".\JobOutputs" # *** NEW: Directory for individual job logs ***
+$csvOutputPath = ".\TournamentResults2.csv"
+$logDirectory = ".\JobOutputs2" # *** NEW: Directory for individual job logs ***
 
 # --- Create Log Directory ---
 Write-Host "Ensuring log directory exists: $logDirectory"
@@ -48,15 +48,15 @@ Write-Host "---"
 
 # --- Generate Deck Names ---
 $deckNames = @()
-$deckNames += "Deck_01$deckExtension"
-$deckNames += "Deck_08$deckExtension"
-$deckNames += "Deck_22$deckExtension"
-$deckNames += "Deck_41$deckExtension"
-$deckNames += "Deck_50$deckExtension"
-$deckNames += "Deck_100$deckExtension"
-$deckNames += "Deck_141$deckExtension"
-$deckNames += "Deck_146$deckExtension"
-$deckNames += "Deck_200$deckExtension"
+#$deckNames += "Deck_01$deckExtension"
+#$deckNames += "Deck_08$deckExtension"
+#$deckNames += "Deck_22$deckExtension"
+$deckNames += "Deck_999$deckExtension"
+$deckNames += "Deck_998$deckExtension"
+#$deckNames += "Deck_100$deckExtension"
+#$deckNames += "Deck_141$deckExtension"
+#$deckNames += "Deck_146$deckExtension"
+#$deckNames += "Deck_200$deckExtension"
 
 Write-Host "Deck Names:"
 $deckNames | ForEach-Object { Write-Host "- $_" }
@@ -194,7 +194,7 @@ foreach ($game in $allGames) {
         param($ScriptPath, $D1, $D2)
         & $ScriptPath -SkipBuild -NumGames 1 -Deck1 $D1 -Deck2 $D2
     }
-    $currentJob = Start-Job -ScriptBlock $scriptBlock -ArgumentList $runScriptPath, $deck1Arg, $deck2Arg -Name "Game_${deck1Arg}_vs_${deck2Arg}"
+    $currentJob = Start-Job -ScriptBlock $scriptBlock -ArgumentList "$runScriptPath", $deck1Arg, $deck2Arg -Name "Game_${deck1Arg}_vs_${deck2Arg}"
 
     $currentJobInfo = [PSCustomObject]@{
         Job   = $currentJob
