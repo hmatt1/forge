@@ -220,7 +220,7 @@ public class AiCardMemory {
         }
         ((PlayerControllerAi)ai.getController()).getAi().getCardMemory().rememberCard(c, set);
     }
-    public static void rememberCard(AiController aic, Card c, MemorySet set) {
+    public static void rememberCard(AiControllerOld aic, Card c, MemorySet set) {
         aic.getCardMemory().rememberCard(c, set);
     }
     public static void forgetCard(Player ai, Card c, MemorySet set) {
@@ -229,7 +229,7 @@ public class AiCardMemory {
         }
         ((PlayerControllerAi)ai.getController()).getAi().getCardMemory().forgetCard(c, set);
     }
-    public static void forgetCard(AiController aic, Card c, MemorySet set) {
+    public static void forgetCard(AiControllerOld aic, Card c, MemorySet set) {
         aic.getCardMemory().forgetCard(c, set);
     }
     public static boolean isRememberedCard(Player ai, Card c, MemorySet set) {
@@ -238,7 +238,7 @@ public class AiCardMemory {
         }
         return ((PlayerControllerAi)ai.getController()).getAi().getCardMemory().isRememberedCard(c, set);
     }
-    public static boolean isRememberedCard(AiController aic, Card c, MemorySet set) {
+    public static boolean isRememberedCard(AiControllerOld aic, Card c, MemorySet set) {
         return aic.getCardMemory().isRememberedCard(c, set);
     }
     public static boolean isRememberedCardByName(Player ai, String name, MemorySet set) {
@@ -247,7 +247,7 @@ public class AiCardMemory {
         }
         return ((PlayerControllerAi)ai.getController()).getAi().getCardMemory().isRememberedCardByName(name, set);
     }
-    public static boolean isRememberedCardByName(AiController aic, String name, MemorySet set) {
+    public static boolean isRememberedCardByName(AiControllerOld aic, String name, MemorySet set) {
         return aic.getCardMemory().isRememberedCardByName(name, set);
     }
     public static void clearMemorySet(Player ai, MemorySet set) {
@@ -256,7 +256,7 @@ public class AiCardMemory {
         }
         ((PlayerControllerAi)ai.getController()).getAi().getCardMemory().clearMemorySet(set);
     }
-    public static void clearMemorySet(AiController aic, MemorySet set) {
+    public static void clearMemorySet(AiControllerOld aic, MemorySet set) {
         if (!isMemorySetEmpty(aic, set)) {
             aic.getCardMemory().clearMemorySet(set);
         }
@@ -267,7 +267,7 @@ public class AiCardMemory {
         }
         return ((PlayerControllerAi)ai.getController()).getAi().getCardMemory().isMemorySetEmpty(set);
     }
-    public static boolean isMemorySetEmpty(AiController aic, MemorySet set) {
+    public static boolean isMemorySetEmpty(AiControllerOld aic, MemorySet set) {
         return aic.getCardMemory().isMemorySetEmpty(set);
     }
 }

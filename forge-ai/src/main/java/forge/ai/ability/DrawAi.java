@@ -89,7 +89,7 @@ public class DrawAi extends SpellAbilityAi {
      * forge.game.card.Card)
      */
     @Override
-    protected boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
+    public boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
         if (!ComputerUtilCost.checkCreatureSacrificeCost(ai, cost, source, sa)) {
             return false;
         }

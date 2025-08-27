@@ -1,10 +1,7 @@
 package forge.ai.ability;
 
 
-import forge.ai.AiController;
-import forge.ai.AiProps;
-import forge.ai.PlayerControllerAi;
-import forge.ai.SpellAbilityAi;
+import forge.ai.*;
 import forge.game.card.Card;
 import forge.game.phase.PhaseType;
 import forge.game.player.Player;
@@ -32,7 +29,7 @@ public class RollPlanarDiceAi extends SpellAbilityAi {
     }
 
     private boolean willRollOnPlane(Player ai, Card plane) {
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         boolean decideToRoll = false;
         boolean rollInMain1 = false;
         String modeName = "never";

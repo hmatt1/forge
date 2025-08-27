@@ -861,7 +861,7 @@ public class AiBlockController {
             return;
         }
 
-        AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
         final int evalThresholdToken = aic.getIntProperty(AiProps.THRESHOLD_TOKEN_CHUMP_TO_SAVE_PLANESWALKER);
         final int evalThresholdNonToken = aic.getIntProperty(AiProps.THRESHOLD_NONTOKEN_CHUMP_TO_SAVE_PLANESWALKER);
         final boolean onlyIfLethal = aic.getBooleanProperty(AiProps.CHUMP_TO_SAVE_PLANESWALKER_ONLY_ON_LETHAL);
@@ -1281,7 +1281,7 @@ public class AiBlockController {
         int aiCreatureCount = 0;
         int oppCreatureCount = 0;
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             // simulation must get same results or it may crash
             if (!aic.usesSimulation()) {
                 enableRandomTrades = aic.getBooleanProperty(AiProps.ENABLE_RANDOM_FAVORABLE_TRADES_ON_BLOCK);

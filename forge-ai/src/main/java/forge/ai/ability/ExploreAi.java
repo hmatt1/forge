@@ -41,7 +41,7 @@ public class ExploreAi extends SpellAbilityAi {
         int numLandsToStillNeedMore = 2;
 
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
             maxCMCDiff = aic.getIntProperty(AiProps.EXPLORE_MAX_CMC_DIFF_TO_PUT_IN_GRAVEYARD);
             numLandsToStillNeedMore = aic.getIntProperty(AiProps.EXPLORE_NUM_LANDS_TO_STILL_NEED_MORE);
         }

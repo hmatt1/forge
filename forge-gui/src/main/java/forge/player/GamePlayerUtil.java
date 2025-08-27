@@ -4,6 +4,7 @@ import forge.LobbyPlayer;
 import forge.ai.AIOption;
 import forge.ai.AiProfileUtil;
 import forge.ai.LobbyPlayerAi;
+import forge.ai2.MattLobbyPlayerAi;
 import forge.gui.GuiBase;
 import forge.gui.util.SOptionPane;
 import forge.localinstance.properties.ForgePreferences.FPref;
@@ -56,6 +57,7 @@ public final class GamePlayerUtil {
     }
     public static LobbyPlayer createAiPlayer(final String name, final int avatarIndex) {
         final int sleeveCount = GuiBase.getInterface().getSleevesCount();
+        System.out.println("[MJH] got sleeve count: " + sleeveCount);
         return createAiPlayer(name, avatarIndex, sleeveCount == 0 ? 0 : MyRandom.getRandom().nextInt(sleeveCount), null, "");
     }
     public static LobbyPlayer createAiPlayer(final String name, final int avatarIndex, final int sleeveIndex) {
@@ -65,9 +67,16 @@ public final class GamePlayerUtil {
         return createAiPlayer(name, avatarIndex, sleeveIndex, options, "");
     }
     public static LobbyPlayer createAiPlayer(final String name, final int avatarIndex, final int sleeveIndex, final Set<AIOption> options, final String profileOverride) {
-        final LobbyPlayerAi player = new LobbyPlayerAi(name, options);
+        System.out.println("[MJH] create ai player!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n!\n\n!\n\n!");
 
-        System.out.println("[MJH] [AI Preferences] Creating AI player " + name + " with profile " + profileOverride);
+        final LobbyPlayerAi player;
+        if (name.contains("Deck_998")) {
+            System.out.println("[MJH] GamePlayerUtil.java: Created MattLobbyPlayerAi for " + name);
+            player = new MattLobbyPlayerAi(name, options);
+        } else {
+            System.out.println("[MJH] GamePlayerUtil.java: Created LobbyPlayerAi for " + name);
+            player = new LobbyPlayerAi(name, options);
+        }
 
         // TODO: implement specific AI profiles for quest mode.
         String profile = "";

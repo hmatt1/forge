@@ -43,7 +43,7 @@ public class CountersPutAi extends CountersAi {
      * forge.game.card.Card)
      */
     @Override
-    protected boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
+    public boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
         final String type = sa.getParam("CounterType");
         final String aiLogic = sa.getParamOrDefault("AILogic", "");
 

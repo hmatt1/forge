@@ -253,7 +253,7 @@ public class ComputerUtilCost {
                     if (c == null) {
                         c = part.getAbilityAmount(sourceAbility);
                     }
-                    final AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+                    final AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
                     CardCollectionView choices = aic.chooseSacrificeType(part.getType(), sourceAbility, effect, c, exclude);
                     if (choices != null) {
                         list.addAll(choices);

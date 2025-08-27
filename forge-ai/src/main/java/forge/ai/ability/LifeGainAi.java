@@ -27,7 +27,7 @@ public class LifeGainAi extends SpellAbilityAi {
      * forge.game.card.Card)
      */
     @Override
-    protected boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
+    public boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
         final Game game = source.getGame();
         final PhaseHandler ph = game.getPhaseHandler();
         final int life = ai.getLife();

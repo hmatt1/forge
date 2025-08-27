@@ -162,7 +162,7 @@ public class CounterAi extends SpellAbilityAi {
 
         // Specific constraints for the AI to use/not use counterspells against specific groups of spells
         // (specified in the AI profile)
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         boolean ctrCmc0ManaPerms = aic.getBooleanProperty(AiProps.ALWAYS_COUNTER_CMC_0_MANA_MAKING_PERMS);
         boolean ctrDamageSpells = aic.getBooleanProperty(AiProps.ALWAYS_COUNTER_DAMAGE_SPELLS);
         boolean ctrRemovalSpells = aic.getBooleanProperty(AiProps.ALWAYS_COUNTER_REMOVAL_SPELLS);

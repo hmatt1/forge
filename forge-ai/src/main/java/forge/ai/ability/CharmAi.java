@@ -95,7 +95,7 @@ public class CharmAi extends SpellAbilityAi {
 
     private List<AbilitySub> chooseOptionsAi(SpellAbility sa, List<AbilitySub> choices, final Player ai, boolean isTrigger, int num, int min) {
         List<AbilitySub> chosenList = Lists.newArrayList();
-        AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
         boolean allowRepeat = sa.hasParam("CanRepeatModes"); // FIXME: unused for now, the AI doesn't know how to effectively handle repeated choices
 
         // Pawprint
@@ -243,7 +243,7 @@ public class CharmAi extends SpellAbilityAi {
     private List<AbilitySub> chooseMultipleOptionsAi(List<AbilitySub> choices, final Player ai, int min) {
         AbilitySub goodChoice = null;
         List<AbilitySub> chosenList = Lists.newArrayList();
-        AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
         for (AbilitySub sub : choices) {
             sub.setActivatingPlayer(ai);
             // Assign generic good choice to fill up choices if necessary 

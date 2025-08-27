@@ -42,7 +42,7 @@ public class ImmediateTriggerAi extends SpellAbilityAi {
             return false;
         }
 
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         trigsa.setActivatingPlayer(ai);
 
         return aic.doTrigger(trigsa, !"You".equals(sa.getParamOrDefault("OptionalDecider", "You")));

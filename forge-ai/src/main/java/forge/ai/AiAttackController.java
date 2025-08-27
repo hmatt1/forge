@@ -634,7 +634,7 @@ public class AiAttackController {
         // thus attempting to predict how many creatures with evasion can actively block
         boolean predictEvasion = false;
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             if (aic.getBooleanProperty(AiProps.COMBAT_ASSAULT_ATTACK_EVASION_PREDICTION)) {
                 predictEvasion = true;
             }
@@ -875,7 +875,7 @@ public class AiAttackController {
         boolean predictEvasion = false;
         boolean simAI = false;
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             simAI = aic.usesSimulation();
             if (!simAI) {
                 playAggro = aic.getBooleanProperty(AiProps.PLAY_AGGRO);

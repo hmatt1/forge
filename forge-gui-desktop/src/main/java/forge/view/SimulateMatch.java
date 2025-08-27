@@ -125,6 +125,7 @@ public class SimulateMatch {
                     rp = new RegisteredPlayer(d);
                 }
                 rp.setPlayer(GamePlayerUtil.createAiPlayer(name, i - 1));
+                System.out.println("[MJH] SimulateMatch.java: Created Player: " + rp.getPlayer().getName());
                 pp.add(rp);
                 i++;
             }

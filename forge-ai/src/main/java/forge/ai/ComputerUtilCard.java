@@ -440,7 +440,7 @@ public class ComputerUtilCard {
 
     // For ability of Oracle en-Vec, return the first card that are going to attack next turn
     public static Card getBestCreatureToAttackNextTurnAI(final Player aiPlayer, final Iterable<Card> list) {
-        AiController aic = ((PlayerControllerAi) aiPlayer.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi) aiPlayer.getController()).getAi();
         for (final Card card : list) {
             if (aic.getPredictedCombatNextTurn().isAttacking(card)) {
                 return card;
@@ -619,7 +619,7 @@ public class ComputerUtilCard {
     }
 
     public static boolean doesCreatureAttackAI(final Player aiPlayer, final Card card) {
-        AiController aic = ((PlayerControllerAi) aiPlayer.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi) aiPlayer.getController()).getAi();
         return aic.getPredictedCombat().isAttacking(card);
     }
 
@@ -1059,7 +1059,7 @@ public class ComputerUtilCard {
 
     public static boolean useRemovalNow(final SpellAbility sa, final Card c, final int dmg, ZoneType destination) {
         final Player ai = sa.getActivatingPlayer();
-        final AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+        final AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
         final Game game = ai.getGame();
         final PhaseHandler ph = game.getPhaseHandler();
         final PhaseType phaseType = ph.getPhase();
@@ -1309,7 +1309,7 @@ public class ComputerUtilCard {
         boolean simAI = false;
 
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             simAI = aic.usesSimulation();
             if (!simAI) {
                 holdCombatTricks = aic.getBooleanProperty(AiProps.TRY_TO_HOLD_COMBAT_TRICKS_UNTIL_BLOCK);
@@ -1913,7 +1913,7 @@ public class ComputerUtilCard {
         int priorityRemovalThreshold = 0;
         int lifeInDanger = 5;
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             enablePriorityRemoval = aic.getBooleanProperty(AiProps.ACTIVELY_DESTROY_IMMEDIATELY_UNBLOCKABLE);
             priorityRemovalThreshold = aic.getIntProperty(AiProps.DESTROY_IMMEDIATELY_UNBLOCKABLE_THRESHOLD);
             priorityRemovalOnlyInDanger = aic.getBooleanProperty(AiProps.DESTROY_IMMEDIATELY_UNBLOCKABLE_ONLY_IN_DNGR);

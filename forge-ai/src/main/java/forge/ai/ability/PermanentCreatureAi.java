@@ -105,7 +105,7 @@ public class PermanentCreatureAi extends PermanentAi {
         Game game = ai.getGame();
         PhaseHandler ph = game.getPhaseHandler();
         Combat combat = game.getCombat();
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
 
         boolean isOppTurn = ph.getPlayerTurn().isOpponentOf(ai);
         boolean isOwnEOT = ph.is(PhaseType.END_OF_TURN, ai);

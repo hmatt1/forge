@@ -88,7 +88,7 @@ public class RepeatAi extends SpellAbilityAi {
         	return mandatory;
         }
 
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         return aic.doTrigger(repeat, mandatory);
     }
 }

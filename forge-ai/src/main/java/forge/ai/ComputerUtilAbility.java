@@ -409,7 +409,7 @@ public class ComputerUtilAbility {
 
     public static List<SpellAbility> sortCreatureSpells(final List<SpellAbility> all) {
         // try to smoothen power creep by making CMC less of a factor
-        final List<SpellAbility> creatures = AiController.filterListByApi(Lists.newArrayList(all), ApiType.PermanentCreature);
+        final List<SpellAbility> creatures = AiControllerOld.filterListByApi(Lists.newArrayList(all), ApiType.PermanentCreature);
         if (creatures.size() <= 1) {
             return all;
         }

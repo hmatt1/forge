@@ -3,6 +3,7 @@ package forge.ai;
 import com.google.common.collect.*;
 import forge.LobbyPlayer;
 import forge.ai.ability.ProtectAi;
+import forge.ai2.MattAiController;
 import forge.card.CardStateName;
 import forge.card.ColorSet;
 import forge.card.ICardFace;
@@ -56,14 +57,25 @@ import java.util.function.Predicate;
  * Handles phase skips for now.
  */
 public class PlayerControllerAi extends PlayerController {
-    private final AiController brains;
+    private AiControllerAbstract brains = null;
 
     private boolean pilotsNonAggroDeck = false;
 
-    public PlayerControllerAi(Game game, Player p, LobbyPlayer lp) {
+    public PlayerControllerAi(Game game, Player p, LobbyPlayer lp, AiControllerOld oldAiController) {
         super(game, p, lp);
 
-        brains = new AiController(p, game);
+        brains = oldAiController;
+    }
+
+    public PlayerControllerAi(Game game, Player p, LobbyPlayer lp, MattAiController aiController) {
+        super(game, p, lp);
+
+        brains = aiController;
+    }
+
+    public PlayerControllerAi(Game game, Player opponent, LobbyPlayer lobbyPlayer) {
+        super(game, opponent, lobbyPlayer);
+        brains = new AiControllerOld(opponent, game);
     }
 
     public boolean pilotsNonAggroDeck() {
@@ -90,7 +102,7 @@ public class PlayerControllerAi extends PlayerController {
         return abilities.get(0);
     }
 
-    public AiController getAi() {
+    public AiControllerAbstract getAi() {
         return brains;
     }
 
@@ -809,7 +821,8 @@ public class PlayerControllerAi extends PlayerController {
 
     @Override
     public List<SpellAbility> chooseSpellAbilityToPlay() {
-        return brains.chooseSpellAbilityToPlay();
+        var result = brains.chooseSpellAbilityToPlay();
+        return result;
     }
 
     @Override

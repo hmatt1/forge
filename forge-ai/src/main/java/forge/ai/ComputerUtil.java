@@ -345,7 +345,7 @@ public class ComputerUtil {
                 } else {
                     // empty sacMeList, so get some viable average preference if the option is enabled
                     if (ai.getController().isAI()) {
-                        AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+                        AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
                         boolean enableDefaultPref = aic.getBooleanProperty(AiProps.SACRIFICE_DEFAULT_PREF_ENABLE);
                         if (enableDefaultPref) {
                             int minCMC = aic.getIntProperty(AiProps.SACRIFICE_DEFAULT_PREF_MIN_CMC);
@@ -2001,7 +2001,7 @@ public class ComputerUtil {
         else if ((threatApi == ApiType.Attach && (topStack.isCurse() || "Curse".equals(topStack.getParam("AILogic"))))
                 && (saviourApi == ApiType.Pump || saviourApi == ApiType.PumpAll
                 || saviourApi == ApiType.Protection || saviourApi == null)) {
-            AiController aic = aiPlayer.isAI() ? ((PlayerControllerAi)aiPlayer.getController()).getAi() : null;
+            AiControllerAbstract aic = aiPlayer.isAI() ? ((PlayerControllerAi)aiPlayer.getController()).getAi() : null;
             boolean enableCurseAuraRemoval = aic != null ? aic.getBooleanProperty(AiProps.ACTIVELY_DESTROY_IMMEDIATELY_UNBLOCKABLE) : false;
             if (enableCurseAuraRemoval) {
                 for (final Object o : objects) {
@@ -2044,7 +2044,7 @@ public class ComputerUtil {
         boolean willDieFromSpell = false;
         boolean noStackCheck = false;
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             if (aic.getBooleanProperty(AiProps.DONT_EVAL_KILLSPELLS_ON_STACK_WITH_PERMISSION)) {
                 // See if permission is on stack and ignore this check if there is and the relevant AI flag is set
                 // TODO: improve this so that this flag is not needed and the AI can properly evaluate spells in presence of counterspells.
@@ -2082,7 +2082,7 @@ public class ComputerUtil {
      * @return a filtered list with no dying creatures in it
      */
     public static CardCollection filterCreaturesThatWillDieThisTurn(final Player ai, final CardCollection list, final SpellAbility excludeSa) {
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         if (aic.getBooleanProperty(AiProps.AVOID_TARGETING_CREATS_THAT_WILL_DIE)) {
             // Try to avoid targeting creatures that are dead on board
             List<Card> willBeKilled = CardLists.filter(list, card -> card.isCreature() && predictCreatureWillDieThisTurn(ai, card, excludeSa));
@@ -2125,7 +2125,7 @@ public class ComputerUtil {
         // Or if this is really really fast, determine what the 5 would be based on scoring
         // All of the possibilities
 
-        final AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        final AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         int currentHandSize = handList.size();
         int finalHandSize = currentHandSize - cardsToReturn;
 
@@ -2265,7 +2265,7 @@ public class ComputerUtil {
         boolean uncastablesToBottom = false;
         int uncastableCMCThreshold = 1;
         if (player.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi)player.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi)player.getController()).getAi();
             maxLandsToScryLandsToTop = aic.getIntProperty(AiProps.SCRY_NUM_LANDS_TO_STILL_NEED_MORE);
             minLandsToScryLandsAway = aic.getIntProperty(AiProps.SCRY_NUM_LANDS_TO_NOT_NEED_MORE);
             minCreatsToScryCreatsAway = aic.getIntProperty(AiProps.SCRY_NUM_CREATURES_TO_NOT_NEED_SUBPAR_ONES);
@@ -2383,7 +2383,7 @@ public class ComputerUtil {
 
     public static CardCollection getCardsToDiscardFromFriend(Player aiChooser, Player p, SpellAbility sa, CardCollection validCards, int min, int max) {
         if (p == aiChooser) { // ask that ai player what he would like to discard
-            final AiController aic = ((PlayerControllerAi)p.getController()).getAi();
+            final AiControllerAbstract aic = ((PlayerControllerAi)p.getController()).getAi();
             return aic.getCardsToDiscard(min, max, validCards, sa);
         }
         // no special options for human or remote friends
@@ -3028,7 +3028,7 @@ public class ComputerUtil {
 
     public static boolean targetPlayableSpellCard(final Player ai, Iterable<Card> options, final SpellAbility sa, final boolean withoutPayingManaCost, boolean mandatory) {
         // determine and target a card with a SA that the AI can afford and will play
-        AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
         sa.resetTargets();
 
         CardCollection targets = new CardCollection();

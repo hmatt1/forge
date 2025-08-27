@@ -105,7 +105,7 @@ public class RearrangeTopOfLibraryAi extends SpellAbilityAi {
         int uncastableCMCThreshold = 2;
         int minLandsToScryLandsAway = 4;
         if (player.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi)player.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi)player.getController()).getAi();
             minLandsToScryLandsAway = aic.getIntProperty(AiProps.SCRY_NUM_LANDS_TO_NOT_NEED_MORE);
             uncastableCMCThreshold = aic.getIntProperty(AiProps.SCRY_IMMEDIATELY_UNCASTABLE_CMC_DIFF);
         }

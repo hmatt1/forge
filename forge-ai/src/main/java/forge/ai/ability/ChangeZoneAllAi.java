@@ -163,7 +163,7 @@ public class ChangeZoneAllAi extends SpellAbilityAi {
             int creatureEvalThreshold = 200; // value difference (in evaluateCreatureList units)
             int nonCreatureEvalThreshold = 3; // CMC difference
             if (ai.getController().isAI()) {
-                AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+                AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
                 if (destination == ZoneType.Hand) {
                     creatureEvalThreshold = aic.getIntProperty(AiProps.BOUNCE_ALL_TO_HAND_CREAT_EVAL_DIFF);
                     nonCreatureEvalThreshold = aic.getIntProperty(AiProps.BOUNCE_ALL_TO_HAND_NONCREAT_EVAL_DIFF);

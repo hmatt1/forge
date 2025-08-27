@@ -1,6 +1,11 @@
 ## Unreleased
 ### No issue
 
+**run tournament ps1**
+
+
+[353826288ba825a](https://github.com/Card-Forge/forge/commit/353826288ba825a) Matt Hornung *2025-08-17 21:36:01*
+
 **update**
 
 

@@ -194,7 +194,7 @@ public class TokenAi extends SpellAbilityAi {
         boolean alwaysOnOppAttack = true;
 
         if (ai.getController().isAI()) {
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             chance = (double)aic.getIntProperty(AiProps.TOKEN_GENERATION_ABILITY_CHANCE) / 100;
             alwaysFromPW = aic.getBooleanProperty(AiProps.TOKEN_GENERATION_ALWAYS_IF_FROM_PLANESWALKER);
             alwaysOnOppAttack = aic.getBooleanProperty(AiProps.TOKEN_GENERATION_ALWAYS_IF_OPP_ATTACKS);

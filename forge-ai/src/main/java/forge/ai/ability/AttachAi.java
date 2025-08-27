@@ -121,7 +121,7 @@ public class AttachAi extends SpellAbilityAi {
         Card source = sa.getHostCard();
         Game game = ai.getGame();
         Combat combat = game.getCombat();
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
 
         if (!aic.getBooleanProperty(AiProps.FLASH_USE_BUFF_AURAS_AS_COMBAT_TRICKS)) {
             // Currently this only works with buff auras, so if the relevant toggle is disabled, just return true
@@ -1295,7 +1295,7 @@ public class AttachAi extends SpellAbilityAi {
 
         Card c = attachGeneralAI(aiPlayer, sa, prefList, mandatory, attachSource, sa.getParam("AILogic"));
 
-        AiController aic = ((PlayerControllerAi)aiPlayer.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)aiPlayer.getController()).getAi();
         if (c != null && attachSource.isEquipment()
                 && attachSource.isEquipping()
                 && attachSource.getEquipping().getController() == aiPlayer) {

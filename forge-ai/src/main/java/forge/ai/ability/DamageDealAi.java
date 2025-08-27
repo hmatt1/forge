@@ -101,7 +101,7 @@ public class DamageDealAi extends DamageAiBase {
 
                 // Try not to waste spells like Blaze or Fireball on early targets, try to do more damage with them if possible
                 if (ai.getController().isAI()) {
-                    AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+                    AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
                     int holdChance = aic.getIntProperty(AiProps.HOLD_X_DAMAGE_SPELLS_FOR_MORE_DAMAGE_CHANCE);
                     if (MyRandom.percentTrue(holdChance)) {
                         int threshold = aic.getIntProperty(AiProps.HOLD_X_DAMAGE_SPELLS_THRESHOLD);
@@ -259,7 +259,7 @@ public class DamageDealAi extends DamageAiBase {
             } else {
                 // we are about to decide to play this damage spell; if there's something chained to it, reserve mana for
                 // the second spell so we don't misplay
-                AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+                AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
                 aic.reserveManaSourcesForNextSpell(chainDmg.getKey(), sa);
             }
         } else if (!damageTargetAI(ai, sa, dmg, false)) {

@@ -45,7 +45,7 @@ public class UntapAi extends SpellAbilityAi {
     }
 
     @Override
-    protected boolean willPayCosts(final Player ai, final SpellAbility sa, final Cost cost, final Card source) {
+    public boolean willPayCosts(final Player ai, final SpellAbility sa, final Cost cost, final Card source) {
         if (!ComputerUtilCost.checkAddM1M1CounterCost(cost, source)) {
             return false;
         }

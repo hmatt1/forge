@@ -1060,7 +1060,7 @@ public class SpecialCardAi {
             // In MoJhoSto, prefer Jhoira sorcery ability from time to time
             if (source.getGame().getRules().hasAppliedVariant(GameType.MoJhoSto)
                     && CardLists.filter(ai.getLandsInPlay(), CardPredicates.UNTAPPED).size() >= 3) {
-                AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+                AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
                 int chanceToPrefJhoira = aic.getIntProperty(AiProps.MOJHOSTO_CHANCE_TO_PREFER_JHOIRA_OVER_MOMIR);
                 int numLandsForJhoira = aic.getIntProperty(AiProps.MOJHOSTO_NUM_LANDS_TO_ACTIVATE_JHOIRA);
 
@@ -1591,7 +1591,7 @@ public class SpecialCardAi {
                 return true;
             }
 
-            AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+            AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
             int lifeInDanger = aic.getIntProperty(AiProps.AI_IN_DANGER_THRESHOLD);
             int numCtrs = sa.getHostCard().getCounters(CounterEnumType.BURDEN);
 

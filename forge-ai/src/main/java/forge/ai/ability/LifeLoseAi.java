@@ -66,7 +66,7 @@ public class LifeLoseAi extends SpellAbilityAi {
      * forge.game.card.Card)
      */
     @Override
-    protected boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
+    public boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
         final String amountStr = sa.getParam("LifeAmount");
         int amount = 0;
 

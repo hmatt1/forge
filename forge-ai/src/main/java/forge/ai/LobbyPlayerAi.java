@@ -11,9 +11,9 @@ import forge.game.player.PlayerController;
 public class LobbyPlayerAi extends LobbyPlayer implements IGameEntitiesFactory {
 
     private String aiProfile = "";
-    private boolean rotateProfileEachGame;
-    private boolean allowCheatShuffle;
-    private boolean useSimulation;
+    protected boolean rotateProfileEachGame;
+    protected boolean allowCheatShuffle;
+    protected boolean useSimulation;
 
     public LobbyPlayerAi(String name, Set<AIOption> options) {
         super(name);

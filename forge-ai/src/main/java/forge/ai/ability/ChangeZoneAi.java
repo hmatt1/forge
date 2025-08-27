@@ -45,7 +45,7 @@ public class ChangeZoneAi extends SpellAbilityAi {
     // cards where multiple cards are fetched at once and they need to be coordinated
     private static CardCollection multipleCardsToChoose = new CardCollection();
 
-    protected boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
+    public boolean willPayCosts(Player ai, SpellAbility sa, Cost cost, Card source) {
         if (sa.isCraft()) {
             CardCollection payingCards = new CardCollection();
             int needed = 0;
@@ -1362,7 +1362,7 @@ public class ChangeZoneAi extends SpellAbilityAi {
             int loyaltyDiff = 2;
             int chance = 30;
             if (ai.getController().isAI()) {
-                AiController aic = ((PlayerControllerAi) ai.getController()).getAi();
+                AiControllerAbstract aic = ((PlayerControllerAi) ai.getController()).getAi();
                 maxLoyaltyToConsider = aic.getIntProperty(AiProps.BLINK_RELOAD_PLANESWALKER_MAX_LOYALTY);
                 loyaltyDiff = aic.getIntProperty(AiProps.BLINK_RELOAD_PLANESWALKER_LOYALTY_DIFF);
                 chance = aic.getIntProperty(AiProps.BLINK_RELOAD_PLANESWALKER_CHANCE);
@@ -1714,7 +1714,7 @@ public class ChangeZoneAi extends SpellAbilityAi {
                     int loyaltyDiff = 2;
                     int chance = 30;
                     if (decider.getController().isAI()) {
-                        AiController aic = ((PlayerControllerAi) decider.getController()).getAi();
+                        AiControllerAbstract aic = ((PlayerControllerAi) decider.getController()).getAi();
                         maxLoyaltyToConsider = aic.getIntProperty(AiProps.BLINK_RELOAD_PLANESWALKER_MAX_LOYALTY);
                         loyaltyDiff = aic.getIntProperty(AiProps.BLINK_RELOAD_PLANESWALKER_LOYALTY_DIFF);
                         chance = aic.getIntProperty(AiProps.BLINK_RELOAD_PLANESWALKER_CHANCE);

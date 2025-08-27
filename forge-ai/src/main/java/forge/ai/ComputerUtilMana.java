@@ -1035,7 +1035,7 @@ public class ComputerUtilMana {
         }
 
         PhaseType curPhase = ai.getGame().getPhaseHandler().getPhase();
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         int chanceToReserve = aic.getIntProperty(AiProps.RESERVE_MANA_FOR_MAIN2_CHANCE);
 
         // For combat tricks, always obey mana reservation

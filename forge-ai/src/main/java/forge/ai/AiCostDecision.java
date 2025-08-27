@@ -128,7 +128,7 @@ public class AiCostDecision extends CostDecisionMakerBase {
             }
             return PaymentDecision.card(differentNames);
         } else {
-            final AiController aic = ((PlayerControllerAi)player.getController()).getAi();
+            final AiControllerAbstract aic = ((PlayerControllerAi)player.getController()).getAi();
 
             CardCollection result = aic.getCardsToDiscard(c, type.split(";"), ability, discarded);
             if (result != null) {
@@ -293,7 +293,7 @@ public class AiCostDecision extends CostDecisionMakerBase {
         CardCollection food = CardLists.filter(player.getCardsIn(ZoneType.Battlefield), CardPredicates.isType("Food"), CardPredicates.canBeSacrificedBy(ability, isEffect()));
         CardCollection exile = CardLists.filter(player.getCardsIn(ZoneType.Graveyard), CardPredicates.canExiledBy(ability, isEffect()));
         if (!food.isEmpty()) {
-            final AiController aic = ((PlayerControllerAi)player.getController()).getAi();
+            final AiControllerAbstract aic = ((PlayerControllerAi)player.getController()).getAi();
             CardCollectionView list = aic.chooseSacrificeType("Food", ability, isEffect(), 1, null);
             return list == null ? null : PaymentDecision.card(list);
         } else {
@@ -486,7 +486,7 @@ public class AiCostDecision extends CostDecisionMakerBase {
 
         int c = cost.getAbilityAmount(ability);
 
-        final AiController aic = ((PlayerControllerAi)player.getController()).getAi();
+        final AiControllerAbstract aic = ((PlayerControllerAi)player.getController()).getAi();
         CardCollectionView list = aic.chooseSacrificeType(cost.getType(), ability, isEffect(), c, null);
         return list == null ? null : PaymentDecision.card(list);
     }
@@ -541,7 +541,7 @@ public class AiCostDecision extends CostDecisionMakerBase {
 
         int c = cost.getAbilityAmount(ability);
 
-        final AiController aic = ((PlayerControllerAi)player.getController()).getAi();
+        final AiControllerAbstract aic = ((PlayerControllerAi)player.getController()).getAi();
         return PaymentDecision.card(aic.getCardsToDiscard(c, type.split(";"), ability));
     }
 

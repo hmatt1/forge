@@ -402,7 +402,7 @@ public class DestroyAi extends SpellAbilityAi {
         int oppLandsOTB = tgtPlayer.getLandsInPlay().size();
 
         // AI profile-dependent properties
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         int amountNoTempoCheck = aic.getIntProperty(AiProps.STRIPMINE_MIN_LANDS_OTB_FOR_NO_TEMPO_CHECK);
         int amountNoTimingCheck = aic.getIntProperty(AiProps.STRIPMINE_MIN_LANDS_FOR_NO_TIMING_CHECK);
         int amountLandsInHand = aic.getIntProperty(AiProps.STRIPMINE_MIN_LANDS_IN_HAND_TO_ACTIVATE);

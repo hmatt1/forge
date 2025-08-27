@@ -40,7 +40,7 @@ public class DelayedTriggerAi extends SpellAbilityAi {
             return false;
         }
 
-        AiController aic = ((PlayerControllerAi)ai.getController()).getAi();
+        AiControllerAbstract aic = ((PlayerControllerAi)ai.getController()).getAi();
         trigsa.setActivatingPlayer(ai);
 
         if (!sa.hasParam("OptionalDecider")) {
