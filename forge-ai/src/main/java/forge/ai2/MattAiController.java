@@ -17,15 +17,12 @@
  */
 package forge.ai2;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import forge.ai.AiControllerAbstract;
 import forge.ai.ComputerUtilCard;
 import forge.game.*;
 import forge.game.card.*;
 import forge.game.player.Player;
 import forge.game.zone.ZoneType;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MattAiController extends AiControllerAbstract {
     LLMApi api = new LLMApi();
@@ -45,14 +42,14 @@ public class MattAiController extends AiControllerAbstract {
         CardCollection nonLandsInHand = CardLists.filter(player.getCardsIn(ZoneType.Hand), CardPredicates.NON_LANDS);
 
         try {
-            var response = api.call(game, player);
+            var response = api.chooseBestLandToPlay(game, player);
             if (response != null) {
-                System.out.println("good");
-
                 var possibleChoice = landList.filter(card -> card.getName().equals(response)).stream().findAny();
                 if (possibleChoice.isPresent()) {
+                    System.out.println("PLAYING LAND!!! " + possibleChoice.get().getName());
                     return possibleChoice.get();
                 } else {
+                    System.out.println("PLAYING LAND FROM PARTIAL MATCH!!! " + possibleChoice.get().getName());
                     var partialMatch = landList.filter(card -> card.getName().contains(response)).stream().findAny();
                     if (partialMatch.isPresent()) {
                         return partialMatch.get();

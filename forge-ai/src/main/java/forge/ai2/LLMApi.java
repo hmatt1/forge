@@ -1,4 +1,5 @@
 package forge.ai2;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -8,16 +9,41 @@ import forge.game.Game;
 import forge.game.player.Player;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
-
-import java.util.Optional;
-
 import org.eclipse.jetty.client.util.StringContentProvider;
 
+import java.util.function.Function;
+
+
+/**
+ * How to Add New Decision Types
+ * Just add a new enum value:
+ * ```
+ * MULLIGAN_DECISION(
+ *     "mtg_mulligan_response",
+ *     "You are a Magic: The Gathering mulligan expert...",
+ *     "Decide whether to keep or mulligan this opening hand...",
+ *     0.3, 800,
+ *     mapper -> {
+ *         // Build JSON schema for mulligan response
+ *         ObjectNode schema = mapper.createObjectNode();
+ *         schema.put("type", "object");
+ *         // ... schema definition
+ *         return schema;
+ *     }
+ * )
+ * ```
+ * Then add the corresponding public method:
+ * ```
+ * public MulliganDecisionDto decideMulligan(Game game, Player activePlayer) throws Exception {
+ *     return makeDecision(DecisionType.MULLIGAN_DECISION, game, activePlayer, MulliganDecisionDto.class);
+ * }
+ * ```
+ */
 public class LLMApi {
 
-    ObjectMapper mapper;
-    HttpClient client;
-    boolean notStarted = true;
+    private final ObjectMapper mapper;
+    private final HttpClient client;
+    private boolean notStarted = true;
 
     public LLMApi() {
         client = new HttpClient();
@@ -29,16 +55,21 @@ public class LLMApi {
         client.stop();
     }
 
-    public String call(Game game, Player activePlayer) throws Exception {
+    // Public API methods
+    public String chooseBestLandToPlay(Game game, Player activePlayer) throws Exception {
+        LLMCardNameDto result = makeDecision(DecisionType.LAND_SELECTION, game, activePlayer, LLMCardNameDto.class);
+        return result != null ? result.getCardName() : null;
+    }
 
+    // Core decision-making method
+    private <T> T makeDecision(DecisionType decisionType, Game game, Player activePlayer, Class<T> responseClass) throws Exception {
         if (notStarted) {
             client.start();
             notStarted = false;
         }
 
         var gameState = GameStateMapper.mapGameState(game, activePlayer);
-        var json = mapper.writeValueAsString(gameState);
-        var requestBody = buildLLMRequest(json);
+        String requestBody = buildRequest(decisionType, gameState);
 
         ContentResponse response = client.POST("http://127.0.0.1:1234/v1/chat/completions")
                 .header("Content-Type", "application/json")
@@ -50,96 +81,94 @@ public class LLMApi {
 
         System.out.println("Status: " + statusCode);
 
-        try {
-            LLMResponseDto llmResponseDto = mapper.readValue(responseBody, LLMResponseDto.class);
-
-            var contentDto = parseFirstMessageContent(llmResponseDto);
-
-            if (contentDto.isPresent()) {
-                System.out.println("Card Name: " + contentDto.get().getCardName());
-                System.out.println("Thoughts: " + contentDto.get().getThoughts());
-
-                return contentDto.get().getCardName();
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (statusCode != 200) {
+            throw new RuntimeException("HTTP request failed with status: " + statusCode);
         }
 
-        throw new RuntimeException("Failed to parse response content from LLM API");
+        try {
+            LLMResponseDto llmResponse = mapper.readValue(responseBody, LLMResponseDto.class);
+            return parseResponse(llmResponse, responseClass);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse LLM response", e);
+        }
     }
 
-
-    /**
-     * Parses the JSON content from the first message in the first choice.
-     *
-     * @param response The ChatCompletionResponse to parse
-     * @return Optional containing the parsed ContentData, empty if parsing fails or data is missing
-     */
-    public Optional<LLMContentDto> parseFirstMessageContent(LLMResponseDto response) {
+    // Generic response parser
+    private <T> T parseResponse(LLMResponseDto response, Class<T> responseClass) {
         try {
-            // Validate response structure
-            if (response == null ||
-                    response.getChoices() == null ||
-                    response.getChoices().isEmpty()) {
-                return Optional.empty();
+            if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
+                return null;
             }
 
             Choice firstChoice = response.getChoices().get(0);
-            if (firstChoice.getMessage() == null ||
-                    firstChoice.getMessage().getContent() == null) {
-                return Optional.empty();
+            if (firstChoice.getMessage() == null || firstChoice.getMessage().getContent() == null) {
+                return null;
             }
 
             String jsonContent = firstChoice.getMessage().getContent();
-
-            // Parse the JSON string content
-            LLMContentDto contentData = mapper.readValue(jsonContent, LLMContentDto.class);
-            return Optional.of(contentData);
+            return mapper.readValue(jsonContent, responseClass);
 
         } catch (JsonProcessingException e) {
-            // Log the error in a real application
             System.err.println("Failed to parse JSON content: " + e.getMessage());
-            return Optional.empty();
+            return null;
         } catch (Exception e) {
             System.err.println("Unexpected error parsing content: " + e.getMessage());
-            return Optional.empty();
+            return null;
         }
     }
 
-    /**
-     * Convenience method to extract just the card name from the first message.
-     *
-     * @param response The ChatCompletionResponse to parse
-     * @return Optional containing the card name, empty if parsing fails or data is missing
-     */
-    public Optional<String> extractCardName(LLMResponseDto response) {
-        return parseFirstMessageContent(response)
-                .map(LLMContentDto::getCardName);
-    }
-
-    /**
-     * Convenience method to extract just the thoughts from the first message.
-     *
-     * @param response The ChatCompletionResponse to parse
-     * @return Optional containing the thoughts, empty if parsing fails or data is missing
-     */
-    public Optional<String> extractThoughts(LLMResponseDto response) {
-        return parseFirstMessageContent(response)
-                .map(LLMContentDto::getThoughts);
-    }
-
-    private String buildLLMRequest(String gameStateJson) throws Exception {
-        // Root object
+    // Request builder
+    private String buildRequest(DecisionType decisionType, GameStateDto gameStateJson) throws Exception {
         ObjectNode root = mapper.createObjectNode();
 
-        // Messages array
+        // Build messages
         ArrayNode messages = mapper.createArrayNode();
+        messages.add(createSystemMessage(decisionType));
+        messages.add(createUserMessage(decisionType, gameStateJson));
+        root.set("messages", messages);
 
-        // System message
+        // Add response format
+        root.set("response_format", createResponseFormat(decisionType));
+
+        // Standard parameters
+        root.put("temperature", decisionType.temperature);
+        root.put("max_tokens", decisionType.maxTokens);
+        root.put("stream", false);
+
+        return mapper.writeValueAsString(root);
+    }
+
+    private ObjectNode createSystemMessage(DecisionType decisionType) {
         ObjectNode systemMessage = mapper.createObjectNode();
         systemMessage.put("role", "system");
-        systemMessage.put("content",
+        systemMessage.put("content", decisionType.systemPrompt);
+        return systemMessage;
+    }
+
+    private ObjectNode createUserMessage(DecisionType decisionType, GameStateDto gameStateJson) throws JsonProcessingException {
+        ObjectNode userMessage = mapper.createObjectNode();
+        userMessage.put("role", "user");
+        userMessage.put("content", decisionType.userPrompt + "\n\nGAME STATE:\n" + mapper.writeValueAsString(gameStateJson));
+        return userMessage;
+    }
+
+    private ObjectNode createResponseFormat(DecisionType decisionType) {
+        ObjectNode responseFormat = mapper.createObjectNode();
+        responseFormat.put("type", "json_schema");
+
+        ObjectNode jsonSchema = mapper.createObjectNode();
+        jsonSchema.put("name", decisionType.schemaName);
+        jsonSchema.put("strict", true);
+        jsonSchema.set("schema", decisionType.schemaBuilder.apply(mapper));
+
+        responseFormat.set("json_schema", jsonSchema);
+        return responseFormat;
+    }
+
+    // Decision type configuration
+    private enum DecisionType {
+        LAND_SELECTION(
+                "mtg_land_response",
                 "You are a Magic: The Gathering land selection expert. You respond with JSON containing exactly two fields:\n\n" +
                         "JSON STRUCTURE:\n" +
                         "{\n" +
@@ -152,66 +181,54 @@ public class LLMApi {
                         "CARD_NAME FIELD RULES:\n" +
                         "- Must exactly match a land name from the provided hand\n" +
                         "- No additional text\n\n" +
-                        "Remember to always be concise and decisive."
-        );
-        messages.add(systemMessage);
+                        "Remember to always be concise and decisive.",
 
-        // User message
-        ObjectNode userMessage = mapper.createObjectNode();
-        userMessage.put("role", "user");
-        userMessage.put("content",
                 "Select ONE land to play from the lands in hand. Respond with this REQUIRED JSON format:\n\n" +
                         "{\n" +
                         "  \"thoughts\": \"(Brief reasoning on why the land is chosen, max 50 words)\",\n" +
                         "  \"card_name\": \"(Land name from hand)\"\n" +
                         "}\n\n" +
                         "IMPORTANT: Available lands are in the 'hand' array below. Choose based on mana needed for other spells in hand.\n\n" +
-                        "GAME STATE:\n" + gameStateJson +
-                        "YOUR VERY IMPORTANT TASK: GIVE ME THE JSON WITH THE DECISION OF THE BEST ONE LAND TO PLAY!"
+                        "YOUR VERY IMPORTANT TASK: GIVE ME THE JSON WITH THE DECISION OF THE BEST ONE LAND TO PLAY!",
+
+                0.5, 1000,
+
+                mapper -> {
+                    ObjectNode schema = mapper.createObjectNode();
+                    schema.put("type", "object");
+
+                    ObjectNode properties = mapper.createObjectNode();
+                    ObjectNode thoughts = mapper.createObjectNode();
+                    thoughts.put("type", "string");
+                    properties.set("thoughts", thoughts);
+                    ObjectNode cardName = mapper.createObjectNode();
+                    cardName.put("type", "string");
+                    properties.set("card_name", cardName);
+                    schema.set("properties", properties);
+
+                    ArrayNode required = mapper.createArrayNode();
+                    required.add("card_name");
+                    required.add("thoughts");
+                    schema.set("required", required);
+
+                    return schema;
+                }
         );
-        messages.add(userMessage);
 
-        root.set("messages", messages);
+        private final String schemaName;
+        private final String systemPrompt;
+        private final String userPrompt;
+        private final double temperature;
+        private final int maxTokens;
+        private final Function<ObjectMapper, ObjectNode> schemaBuilder;
 
-        // Response format
-        ObjectNode responseFormat = mapper.createObjectNode();
-        responseFormat.put("type", "json_schema");
-
-        // JSON schema object
-        ObjectNode jsonSchema = mapper.createObjectNode();
-        jsonSchema.put("name", "mtg_response");
-        jsonSchema.put("strict", true); // boolean, not string
-
-        // Schema object
-        ObjectNode schema = mapper.createObjectNode();
-        schema.put("type", "object");
-
-        // Properties
-        ObjectNode properties = mapper.createObjectNode();
-        ObjectNode thoughts = mapper.createObjectNode();
-        thoughts.put("type", "string");
-        properties.set("thoughts", thoughts);
-        ObjectNode cardName = mapper.createObjectNode();
-        cardName.put("type", "string");
-        properties.set("card_name", cardName);
-        schema.set("properties", properties);
-
-        // Required array - FIXED: should match the property name
-        ArrayNode required = mapper.createArrayNode();
-        required.add("card_name"); // Fixed from "best_card_to_play"
-        required.add("thoughts"); // Fixed from "best_card_to_play"
-        schema.set("required", required);
-
-        jsonSchema.set("schema", schema);
-        responseFormat.set("json_schema", jsonSchema);
-        root.set("response_format", responseFormat);
-
-        // Other properties
-        root.put("temperature", 0.5);
-        root.put("max_tokens", 1000);
-        root.put("stream", false);
-
-        return mapper.writeValueAsString(root);
+        DecisionType(String schemaName, String systemPrompt, String userPrompt, double temperature, int maxTokens, Function<ObjectMapper, ObjectNode> schemaBuilder) {
+            this.schemaName = schemaName;
+            this.systemPrompt = systemPrompt;
+            this.userPrompt = userPrompt;
+            this.temperature = temperature;
+            this.maxTokens = maxTokens;
+            this.schemaBuilder = schemaBuilder;
+        }
     }
-
 }

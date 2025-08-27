@@ -2,16 +2,16 @@ package forge.ai2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class LLMContentDto {
+public class LLMCardNameDto {
 
     private String thoughts;
 
     @JsonProperty("card_name")
     private String cardName;
 
-    public LLMContentDto() {}
+    public LLMCardNameDto() {}
 
-    public LLMContentDto(String thoughts, String cardName) {
+    public LLMCardNameDto(String thoughts, String cardName) {
         this.thoughts = thoughts;
         this.cardName = cardName;
     }
