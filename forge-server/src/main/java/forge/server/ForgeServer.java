@@ -64,16 +64,29 @@ public class ForgeServer {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        String assetsDir = "forge-gui/";
+        if (args.length > 0) {
+            assetsDir = args[0];
+            if (!assetsDir.endsWith("/") && !assetsDir.endsWith("\\")) {
+                assetsDir += java.io.File.separator;
+            }
+        }
+
         // Initialize Forge Engine
-        // Note: FModel initialization might need proper res/ and user/ directories setup
-        // We'll assume for now it's running in the project root or configured via system properties
+        System.out.println("Initializing Headless GUI with assets from: " + assetsDir);
+        final String finalAssetsDir = assetsDir;
+        forge.gui.GuiBase.setInterface(new HeadlessGui() {
+            @Override public String getAssetsDir() { return finalAssetsDir; }
+        });
+        
         System.out.println("Initializing Forge Engine...");
         FModel.initialize(null, null);
         System.out.println("Forge Engine initialized.");
 
         int port = 50051;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
+        // The first arg was assetsDir, second could be port
+        if (args.length > 1) {
+            port = Integer.parseInt(args[1]);
         }
         ForgeServer server = new ForgeServer(port);
         server.start();
@@ -143,6 +156,7 @@ public class ForgeServer {
                 telemetryLogger.logMatch(game, request.getDeck1Path(), request.getDeck2Path(), result);
                 return result;
             } catch (Exception e) {
+                e.printStackTrace();
                 MatchResult dnfResult = MatchResult.newBuilder()
                         .setMatchId("Match-" + index)
                         .setDnf(true)

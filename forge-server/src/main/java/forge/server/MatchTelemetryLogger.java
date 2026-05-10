@@ -32,8 +32,14 @@ public class MatchTelemetryLogger {
         try (PrintWriter out = new PrintWriter(new FileWriter(csvPath, true))) {
             StringBuilder sb = new StringBuilder();
             sb.append(result.getMatchId()).append(",");
-            sb.append(game.getPlayers().get(0).getName()).append(",");
-            sb.append(game.getPlayers().get(1).getName()).append(",");
+            
+            String p1Name = "Unknown";
+            String p2Name = "Unknown";
+            if (game.getPlayers().size() > 0) p1Name = game.getPlayers().get(0).getName();
+            if (game.getPlayers().size() > 1) p2Name = game.getPlayers().get(1).getName();
+            
+            sb.append(p1Name).append(",");
+            sb.append(p2Name).append(",");
             sb.append(deck1).append(",");
             sb.append(deck2).append(",");
             sb.append(result.getWinnerName()).append(",");
