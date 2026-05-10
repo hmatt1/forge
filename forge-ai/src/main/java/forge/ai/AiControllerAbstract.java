@@ -82,6 +82,17 @@ public abstract class AiControllerAbstract {
     // Instance fields
     protected final Player player;
     protected final Game game;
+    private final List<AiDecisionListener> listeners = new java.util.ArrayList<>();
+
+    public void addDecisionListener(AiDecisionListener listener) {
+        listeners.add(listener);
+    }
+
+    protected void notifyDecision(forge.proto.GameState state, String actionId) {
+        for (AiDecisionListener l : listeners) {
+            l.onDecision(state, actionId);
+        }
+    }
     protected final AiCardMemory memory;
     protected Combat predictedCombat;
     protected Combat predictedCombatNextTurn;

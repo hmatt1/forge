@@ -17,27 +17,17 @@
  */
 package forge.ai2;
 
-import com.google.common.collect.Lists;
 import forge.ai.*;
-import forge.card.CardEdition;
 import forge.game.*;
 import forge.game.ability.ApiType;
 import forge.game.card.*;
-import forge.game.cost.CostPayLife;
-import forge.game.keyword.Keyword;
 import forge.game.player.Player;
-import forge.game.spellability.Spell;
 import forge.game.spellability.SpellAbility;
 import forge.game.zone.ZoneType;
-import forge.util.ComparatorUtil;
-import forge.util.IterableUtil;
-import io.sentry.Sentry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static forge.ai.AiPlayDecision.WillPlay;
 

@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package forge.proto;
+
+option java_multiple_files = true;
+option java_package = "forge.proto";
+option java_outer_classname = "MtgStateProto";
+
+message GameState {
+  int32 turn_number = 1;
+  string current_phase = 2;
+  string current_step = 3;
+  string active_player_id = 4;
+  string priority_player_id = 5;
+  
+  repeated PlayerState players = 6;
+  string perspective_player_id = 7;
+  
+  repeated StackObject stack = 8;
+  CombatState combat = 9;
+  
+  string monarch_player_id = 10;
+  string initiative_player_id = 11;
+  bool is_day = 12;
+  bool is_night = 13;
+  
+  DecisionContext decision_context = 14;
+}
+
+message PlayerState {
+  string player_id = 1;
+  string name = 2;
+  int32 life = 3;
+  bool is_alive = 4;
+  int32 poison_counters = 5;
+  
+  int32 hand_size = 6;
+  repeated CardState hand = 7; // Only for perspective player or known cards
+  
+  int32 library_size = 8;
+  repeated CardState battlefield = 9;
+  repeated CardState graveyard = 10;
+  repeated CardState exile = 11;
+  repeated CardState command = 12;
+  
+  repeated string mana_pool = 13; // e.g., "W", "U", "B", "R", "G", "C"
+  int32 lands_played_this_turn = 14;
+}
+
+message CardState {
+  string id = 1; // Unique ID for this specific card instance in this game
+  string name = 2;
+  string mana_cost = 3;
+  repeated string colors = 4;
+  repeated string types = 5;
+  
+  int32 power = 6;
+  int32 toughness = 7;
+  
+  bool tapped = 8;
+  bool summoning_sick = 9;
+  bool face_down = 10;
+  
+  map<string, int32> counters = 11;
+  repeated string attachments = 12; // IDs of cards attached to this
+  
+  bool attacking = 13;
+  string attacking_target_id = 14; // Player or Planeswalker ID
+  bool blocking = 15;
+  repeated string blocked_attacker_ids = 16;
+  
+  string owner_id = 17;
+  string controller_id = 18;
+  
+  repeated AbilityState abilities = 19;
+}
+
+message AbilityState {
+  string id = 1;
+  string description = 2;
+  string mana_cost = 3;
+  bool can_activate = 4;
+}
+
+message StackObject {
+  string id = 1;
+  string name = 2;
+  string source_card_id = 3;
+  string controller_id = 4;
+  string description = 5;
+  repeated string target_ids = 6;
+}
+
+message CombatState {
+  enum CombatPhase {
+    NOT_IN_COMBAT = 0;
+    BEGIN_COMBAT = 1;
+    DECLARE_ATTACKERS = 2;
+    DECLARE_BLOCKERS = 3;
+    FIRST_STRIKE_DAMAGE = 4;
+    NORMAL_DAMAGE = 5;
+    END_COMBAT = 6;
+  }
+  CombatPhase phase = 1;
+  repeated Attacker attacker_assignments = 2;
+}
+
+message Attacker {
+  string attacker_id = 1;
+  string target_id = 2;
+  repeated string blocker_ids = 3;
+}
+
+message DecisionContext {
+  string prompt = 1;
+  repeated Action available_actions = 2;
+  bool must_act = 3;
+}
+
+message Action {
+  string action_id = 1;
+  string description = 2;
+  oneof action_data {
+    string spell_ability_id = 3;
+    string card_id = 4;
+    bool boolean_value = 5;
+    int32 integer_value = 6;
+  }
+}

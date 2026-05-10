@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package forge.proto;
+
+import "mtg_state.proto";
+
+option java_multiple_files = true;
+option java_package = "forge.proto";
+option java_outer_classname = "AiDecisionProto";
+
+// The service exposed by the external AI (e.g., Python Inference Server)
+service AiDecisionService {
+  // Forge calls this to get a decision from the AI
+  rpc GetDecision (DecisionRequest) returns (DecisionResponse);
+}
+
+message DecisionRequest {
+  GameState game_state = 1;
+}
+
+message DecisionResponse {
+  string action_id = 1; // Must match one of the action_ids in the DecisionContext
+}

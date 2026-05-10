@@ -61,9 +61,13 @@ public class PlayerControllerAi extends PlayerController {
 
     private boolean pilotsNonAggroDeck = false;
 
+    public PlayerControllerAi(Game game, Player p, LobbyPlayer lp, AiControllerAbstract aiController) {
+        super(game, p, lp);
+        brains = aiController;
+    }
+
     public PlayerControllerAi(Game game, Player p, LobbyPlayer lp, AiControllerOld oldAiController) {
         super(game, p, lp);
-
         brains = oldAiController;
     }
 

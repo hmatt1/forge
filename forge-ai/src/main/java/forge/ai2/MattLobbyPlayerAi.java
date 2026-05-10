@@ -1,13 +1,10 @@
 package forge.ai2;
 
 import forge.ai.AIOption;
-import forge.ai.AiProfileUtil;
 import forge.ai.LobbyPlayerAi;
 import forge.ai.PlayerControllerAi;
 import forge.game.Game;
-import forge.game.player.IGameEntitiesFactory;
 import forge.game.player.Player;
-import forge.LobbyPlayer;
 import forge.game.player.PlayerController;
 
 import java.util.Set;

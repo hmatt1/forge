@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package forge.proto;
+
+option java_multiple_files = true;
+option java_package = "forge.proto";
+option java_outer_classname = "SimulationProto";
+
+// The service exposed by Forge (Headless Server)
+service MatchSimulationService {
+  // Python/External script calls this to start a batch of simulations
+  rpc RunSimulation (SimulationRequest) returns (SimulationResponse);
+  
+  // Stream results as they come in
+  rpc RunSimulationStream (SimulationRequest) returns (stream MatchResult);
+}
+
+message SimulationRequest {
+  string deck1_path = 1;
+  string deck2_path = 2;
+  int32 num_matches = 3;
+  
+  // Configuration for AI players
+  AiConfig player1_ai = 4;
+  AiConfig player2_ai = 5;
+  
+  bool enable_decision_logging = 6;
+}
+
+message AiConfig {
+  enum AiType {
+    HEURISTIC = 0;
+    GRPC = 1;
+  }
+  AiType type = 1;
+  string grpc_endpoint = 2; // Only if type is GRPC
+}
+
+message SimulationResponse {
+  repeated MatchResult results = 1;
+}
+
+message MatchResult {
+  string match_id = 1;
+  string winner_name = 2;
+  int32 num_turns = 3;
+  string win_reason = 4; // e.g., "Life zero", "Decked", "Concession"
+  bool dnf = 5; // Did Not Finish (e.g., due to gRPC error)
+}
