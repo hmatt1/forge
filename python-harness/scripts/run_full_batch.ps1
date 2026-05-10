@@ -9,6 +9,17 @@ param (
 
 Write-Host "--- Starting Full Benchmark Lifecycle ($GameCount games) ---" -ForegroundColor Cyan
 
+# 0. Check for orphaned servers
+Write-Host "Checking for port availability..." -ForegroundColor Gray
+$ports = @(50051, 50052)
+foreach ($port in $ports) {
+    $portActive = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
+    if ($portActive) {
+        Write-Error "Port $port is already in use. Please kill the orphaned process before starting a new benchmark."
+        exit 1
+    }
+}
+
 # 1. Start Forge Simulation Server
 Write-Host "[1/4] Starting Forge Server..." -ForegroundColor Yellow
 $forgeProcess = Start-Process mvn.cmd -ArgumentList "exec:java -pl forge-server" -NoNewWindow -PassThru

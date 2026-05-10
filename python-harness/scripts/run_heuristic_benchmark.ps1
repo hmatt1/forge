@@ -9,6 +9,15 @@ param (
 
 Write-Host "--- Starting Heuristic Baseline Lifecycle ($GameCount games) ---" -ForegroundColor Cyan
 
+# 0. Check for orphaned servers
+Write-Host "Checking for port availability..." -ForegroundColor Gray
+$port = 50051
+$portActive = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
+if ($portActive) {
+    Write-Error "Port $port is already in use. Please kill the orphaned process before starting a new benchmark."
+    exit 1
+}
+
 # 1. Start Forge Simulation Server
 Write-Host "[1/3] Starting Forge Server..." -ForegroundColor Yellow
 $forgeProcess = Start-Process mvn.cmd -ArgumentList "exec:java -pl forge-server" -NoNewWindow -PassThru
