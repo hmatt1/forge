@@ -5,19 +5,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
- * Global AI cache to share calculations within a single decision cycle.
- * Uses ThreadLocal to ensure thread-safety during concurrent match simulations.
+ * Thread-safe AI cache that isolates data per thread using ThreadLocal.
+ * This implementation prevents ConcurrentModificationException by using 
+ * per-thread isolation and defensive copying during iteration.
  */
 public class AiCache {
 
-    // stores result + args as vector
-    // Each thread gets its own cache, isolating concurrent matches/evaluations.
     private static final ThreadLocal<Multimap<String, List<Object>>> dataMap = 
             ThreadLocal.withInitial(HashMultimap::create);
 
@@ -25,18 +23,15 @@ public class AiCache {
         return a == b;
     }
 
-    // the cache is shared within a thread for calculations that can be reused
     @SuppressWarnings("unchecked")
     public static <T> T getCached(String key, Supplier<T> func, List<BiFunction<Object, Object, Boolean>> argsCheck, Object... args) {
         Multimap<String, List<Object>> map = dataMap.get();
-        Collection<List<Object>> cachedEntries = map.get(key);
         
-        // Iteration is safe because 'map' is local to the current thread.
-        for (List<Object> cached : cachedEntries) {
-            boolean hit = true;
-            if (cached.size() != args.length + 1) {
-                hit = false;
-            } else {
+        // Iterating over a copy prevents ConcurrentModificationException 
+        // if recursive calls to getCached modify the map.
+        for (List<Object> cached : Lists.newArrayList(map.get(key))) {
+            if (cached.size() == args.length + 1) {
+                boolean hit = true;
                 for (int i = 0; i < args.length; i++) {
                     BiFunction<Object, Object, Boolean> checker = argsCheck == null ? Object::equals : argsCheck.get(i);
                     if (!checker.apply(args[i], cached.get(i + 1))) {
@@ -44,16 +39,16 @@ public class AiCache {
                         break;
                     }
                 }
-            }
-            if (hit) {
-                return (T) cached.get(0);
+                if (hit) {
+                    return (T) cached.get(0);
+                }
             }
         }
         
         T result = func.get();
-        List<Object> cached = Lists.newArrayList((Object) result);
-        cached.addAll(Arrays.asList(args));
-        map.put(key, cached);
+        List<Object> entry = Lists.newArrayList((Object) result);
+        entry.addAll(Arrays.asList(args));
+        map.put(key, entry);
         return result;
     }
 
