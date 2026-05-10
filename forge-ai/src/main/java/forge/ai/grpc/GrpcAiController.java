@@ -14,23 +14,46 @@ import io.grpc.ManagedChannelBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class GrpcAiController extends AiController {
 
+    private static final Map<String, ManagedChannel> CHANNELS = new ConcurrentHashMap<>();
+
     private final ManagedChannel channel;
     private final AiDecisionServiceGrpc.AiDecisionServiceBlockingStub blockingStub;
 
-    public GrpcAiController(Player computerPlayer, Game game, String grpcEndpoint) {
-        super(computerPlayer, game);
-        this.channel = ManagedChannelBuilder.forTarget(grpcEndpoint)
+    private static ManagedChannel getOrCreateChannel(String endpoint) {
+        return CHANNELS.computeIfAbsent(endpoint, e -> 
+            ManagedChannelBuilder.forTarget(e)
                 .usePlaintext()
-                .build();
-        this.blockingStub = AiDecisionServiceGrpc.newBlockingStub(channel);
+                .build()
+        );
     }
 
-    public void shutdown() throws InterruptedException {
-        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+    /** 
+     * Shuts down all static channels. Should be called on application exit.
+     */
+    public static void shutdownAll() {
+        for (ManagedChannel c : CHANNELS.values()) {
+            c.shutdown();
+        }
+        for (ManagedChannel c : CHANNELS.values()) {
+            try {
+                c.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        CHANNELS.clear();
+    }
+
+    public GrpcAiController(Player computerPlayer, Game game, String grpcEndpoint) {
+        super(computerPlayer, game);
+        this.channel = getOrCreateChannel(grpcEndpoint);
+        this.blockingStub = AiDecisionServiceGrpc.newBlockingStub(channel);
     }
 
     private String makeDecision(String prompt, List<Action> actions) {
@@ -43,7 +66,6 @@ public class GrpcAiController extends AiController {
             return actionId;
         } catch (Exception e) {
             System.err.println("gRPC AI Error: " + e.getMessage());
-            // TODO: Signal DNF as per plan
             throw new RuntimeException("gRPC AI failed: " + e.getMessage(), e);
         }
     }
@@ -69,7 +91,7 @@ public class GrpcAiController extends AiController {
                 return c;
             }
         }
-        return super.chooseBestLandToPlay(landList); // Fallback if actionId not found
+        return super.chooseBestLandToPlay(landList);
     }
 
     @Override
@@ -102,7 +124,7 @@ public class GrpcAiController extends AiController {
         String actionId = makeDecision("Choose a spell or ability to play", actions);
         if ("PASS".equals(actionId)) return null;
 
-        if (actionId.startsWith("SA_")) {
+        if (actionId != null && actionId.startsWith("SA_")) {
             int idx = Integer.parseInt(actionId.substring(3));
             if (idx >= 0 && idx < playable.size()) {
                 return playable.get(idx);

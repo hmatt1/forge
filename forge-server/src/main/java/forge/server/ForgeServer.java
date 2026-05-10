@@ -44,6 +44,7 @@ public class ForgeServer {
             System.err.println("*** shutting down gRPC server since JVM is shutting down");
             try {
                 ForgeServer.this.stop();
+                forge.ai.grpc.GrpcAiController.shutdownAll();
             } catch (InterruptedException e) {
                 e.printStackTrace(System.err);
             }
