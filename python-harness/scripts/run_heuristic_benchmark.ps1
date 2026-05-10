@@ -14,7 +14,7 @@ Write-Host "Checking for port availability..." -ForegroundColor Gray
 $port = 50051
 $portActive = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
 if ($portActive) {
-    Write-Error "Port $port is already in use. Please kill the orphaned process before starting a new benchmark."
+    Write-Error "Forge Server (Port $port) is already in use by PID $($portActive[0].OwningProcess). Please kill it before starting."
     exit 1
 }
 
@@ -22,9 +22,12 @@ if ($portActive) {
 Write-Host "[1/3] Starting Forge Server..." -ForegroundColor Yellow
 $forgeProcess = Start-Process mvn.cmd -ArgumentList "exec:java -pl forge-server" -NoNewWindow -PassThru
 
-# 2. Wait for server to initialize
-Write-Host "Waiting 10 seconds for engine to warm up..." -ForegroundColor Gray
-Start-Sleep -Seconds 10
+# 2. Wait for server to initialize via port polling
+Write-Host "Waiting for Forge Server to listen..." -ForegroundColor Gray
+while (-not (Get-NetTCPConnection -LocalPort 50051 -ErrorAction SilentlyContinue)) {
+    Start-Sleep -Seconds 1
+}
+Write-Host "Forge Server is UP." -ForegroundColor Gray
 
 # 3. Run the simulation harness (Heuristic vs Heuristic)
 Write-Host "[2/3] Executing heuristic benchmark games..." -ForegroundColor Yellow
@@ -33,5 +36,11 @@ $harnessProcess = Start-Process python -ArgumentList "python-harness/simulation_
 # 4. Cleanup
 Write-Host "[3/3] Shutting down Forge server..." -ForegroundColor Yellow
 Stop-Process -Id $forgeProcess.Id -Force -ErrorAction SilentlyContinue
+
+# Ensure the specific Java process on 50051 is gone
+$javaConn = Get-NetTCPConnection -LocalPort 50051 -ErrorAction SilentlyContinue
+if ($javaConn) {
+    Stop-Process -Id $javaConn.OwningProcess -Force -ErrorAction SilentlyContinue
+}
 
 Write-Host "--- Benchmark Complete ---" -ForegroundColor Green

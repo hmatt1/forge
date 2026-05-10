@@ -1,16 +1,15 @@
 import grpc
 import argparse
+import sys
 import simulation_pb2
 import simulation_pb2_grpc
 
 def run_simulation(args):
     # Connect to Forge Server
-    # Set a timeout for the channel to avoid getting stuck indefinitely
     options = [('grpc.client_idle_timeout_ms', 30000)]
     channel = grpc.insecure_channel(args.forge_server, options=options)
     stub = simulation_pb2_grpc.MatchSimulationServiceStub(channel)
     
-    # Configure AI types
     def get_ai_config(ai_str):
         if ai_str.lower() == 'heuristic':
             return simulation_pb2.AiConfig(type=simulation_pb2.AiConfig.AiType.HEURISTIC)
@@ -20,7 +19,6 @@ def run_simulation(args):
                 grpc_endpoint=ai_str
             )
 
-    # Configure the request
     request = simulation_pb2.SimulationRequest(
         deck1_path=args.deck1,
         deck2_path=args.deck2,
@@ -33,9 +31,9 @@ def run_simulation(args):
     print(f"Submitting simulation request for {args.count} match(es)...")
     print(f"Player 1: {args.ai1} (Deck: {args.deck1})")
     print(f"Player 2: {args.ai2} (Deck: {args.deck2})")
+    sys.stdout.flush()
     
     try:
-        # Use streaming RPC for large batches to see progress
         matches_run = 0
         p1_wins = 0
         p2_wins = 0
@@ -54,10 +52,9 @@ def run_simulation(args):
                     p2_wins += 1
 
             print(f"[{matches_run}/{args.count}] Match: {result.match_id} | Status: {status} | Winner: {result.winner_name} | Turns: {result.num_turns}")
+            sys.stdout.flush()
             
-            # Explicitly break once we have all results to avoid transport-level hangs
             if matches_run >= args.count:
-                print(f"Breaking!!!!")
                 break
         
         print(f"\n--- Batch Finished (Received all {matches_run} results) ---")
@@ -67,9 +64,11 @@ def run_simulation(args):
         print(f"P2 Wins: {p2_wins} ({(p2_wins/matches_run)*100:.1f}%)")
         if dnfs > 0:
             print(f"DNFs: {dnfs}")
+        sys.stdout.flush()
             
     except grpc.RpcError as e:
         print(f"gRPC Error: {e.code()} - {e.details()}")
+        sys.stdout.flush()
     finally:
         channel.close()
 
