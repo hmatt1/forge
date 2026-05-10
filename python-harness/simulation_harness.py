@@ -59,8 +59,6 @@ def run_simulation(args):
             if matches_run >= args.count:
                 print(f"Breaking!!!!")
                 break
-            else:
-                print(f"Not breaking?? why?")
         
         print(f"\n--- Batch Finished (Received all {matches_run} results) ---")
         print("\n--- Final Results ---")

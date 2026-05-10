@@ -97,28 +97,24 @@ public class ForgeServer {
     static class MatchSimulationServiceImpl extends MatchSimulationServiceGrpc.MatchSimulationServiceImplBase {
 
         private final ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        private final MatchTelemetryLogger telemetryLogger;
 
-        public MatchSimulationServiceImpl() {
-            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+        private MatchTelemetryLogger createLogger() {
+            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new java.util.Date());
             java.io.File resultsDir = new java.io.File("simulation_results");
             if (!resultsDir.exists()) {
                 resultsDir.mkdirs();
             }
-            this.telemetryLogger = new MatchTelemetryLogger("simulation_results/match_analytics_" + timestamp + ".csv");
+            return new MatchTelemetryLogger("simulation_results/match_analytics_" + timestamp + ".csv");
         }
 
         @Override
         public void runSimulation(SimulationRequest request, StreamObserver<SimulationResponse> responseObserver) {
+            MatchTelemetryLogger telemetryLogger = createLogger();
             List<MatchResult> results = new ArrayList<>();
             int numMatches = request.getNumMatches();
             
-            // For simplicity in the first draft, we run synchronously in the executor
-            // but return all results at once for this unary RPC.
-            // Better to use the streaming RPC for long-running batches.
-            
             for (int i = 0; i < numMatches; i++) {
-                results.add(simulateMatch(request, i));
+                results.add(simulateMatch(request, i, telemetryLogger));
             }
             
             responseObserver.onNext(SimulationResponse.newBuilder().addAllResults(results).build());
@@ -127,6 +123,7 @@ public class ForgeServer {
 
         @Override
         public void runSimulationStream(SimulationRequest request, StreamObserver<MatchResult> responseObserver) {
+            MatchTelemetryLogger telemetryLogger = createLogger();
             int numMatches = request.getNumMatches();
             java.util.concurrent.atomic.AtomicInteger remaining = new java.util.concurrent.atomic.AtomicInteger(numMatches);
             System.out.println("Starting simulation stream for " + numMatches + " matches.");
@@ -135,7 +132,7 @@ public class ForgeServer {
                 final int matchIdx = i;
                 executor.submit(() -> {
                     try {
-                        MatchResult result = simulateMatch(request, matchIdx);
+                        MatchResult result = simulateMatch(request, matchIdx, telemetryLogger);
                         synchronized (responseObserver) {
                             responseObserver.onNext(result);
                         }
@@ -160,7 +157,7 @@ public class ForgeServer {
             }
         }
 
-        private MatchResult simulateMatch(SimulationRequest request, int index) {
+        private MatchResult simulateMatch(SimulationRequest request, int index, MatchTelemetryLogger telemetryLogger) {
             try {
                 Deck d1 = DeckSerializer.fromFile(new File(request.getDeck1Path()));
                 Deck d2 = DeckSerializer.fromFile(new File(request.getDeck2Path()));
