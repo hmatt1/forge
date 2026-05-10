@@ -119,15 +119,23 @@ public class ForgeServer {
         @Override
         public void runSimulationStream(SimulationRequest request, StreamObserver<MatchResult> responseObserver) {
             int numMatches = request.getNumMatches();
+            java.util.concurrent.atomic.AtomicInteger remaining = new java.util.concurrent.atomic.AtomicInteger(numMatches);
+
             for (int i = 0; i < numMatches; i++) {
                 final int matchIdx = i;
                 executor.submit(() -> {
-                    MatchResult result = simulateMatch(request, matchIdx);
-                    synchronized (responseObserver) {
-                        responseObserver.onNext(result);
+                    try {
+                        MatchResult result = simulateMatch(request, matchIdx);
+                        synchronized (responseObserver) {
+                            responseObserver.onNext(result);
+                        }
+                    } finally {
+                        if (remaining.decrementAndGet() == 0) {
+                            synchronized (responseObserver) {
+                                responseObserver.onCompleted();
+                            }
+                        }
                     }
-                    // If this was the last one, we should ideally coordinate to call onCompleted
-                    // Simplified for now.
                 });
             }
         }
