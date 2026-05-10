@@ -11,9 +11,10 @@ import org.tinylog.Logger;
 
 public class LobbyPlayerAi extends LobbyPlayer implements IGameEntitiesFactory {
 
-    private String aiProfile = "";
-    private boolean rotateProfileEachGame;
-    private boolean useSimulation;
+    protected String aiProfile = "";
+    protected boolean rotateProfileEachGame;
+    protected boolean useSimulation;
+    protected boolean allowCheatShuffle;
 
     public LobbyPlayerAi(String name, Set<AIOption> options) {
         super(name);

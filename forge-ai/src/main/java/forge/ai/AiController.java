@@ -88,17 +88,29 @@ import static java.lang.Math.max;
  * @version $Id$
  */
 public class AiController {
-    private final Player player;
-    private final Game game;
-    private final AiCardMemory memory;
-    private Combat predictedCombat;
-    private Combat predictedCombatNextTurn;
-    private boolean useSimulation;
-    private SpellAbilityPicker simPicker;
-    private int lastAttackAggression;
-    private boolean useLivingEnd;
-    private List<SpellAbility> skipped;
-    private boolean timeoutReached;
+    protected final Player player;
+    protected final Game game;
+    protected final AiCardMemory memory;
+    protected Combat predictedCombat;
+    protected Combat predictedCombatNextTurn;
+    protected boolean useSimulation;
+    protected SpellAbilityPicker simPicker;
+    protected int lastAttackAggression;
+    protected boolean useLivingEnd;
+    protected List<SpellAbility> skipped;
+    protected boolean timeoutReached;
+
+    private final List<AiDecisionListener> listeners = new java.util.ArrayList<>();
+
+    public void addDecisionListener(AiDecisionListener listener) {
+        listeners.add(listener);
+    }
+
+    protected void notifyDecision(forge.proto.GameState state, String actionId) {
+        for (AiDecisionListener l : listeners) {
+            l.onDecision(state, actionId);
+        }
+    }
 
     public AiController(final Player computerPlayer, final Game game0) {
         player = computerPlayer;
@@ -470,7 +482,7 @@ public class AiController {
         return landList;
     }
 
-    private Card chooseBestLandToPlay(CardCollection landList) {
+    public Card chooseBestLandToPlay(CardCollection landList) {
         if (landList.isEmpty()) {
             return null;
         }
@@ -819,7 +831,7 @@ public class AiController {
         return false;
     }
 
-    private AiPlayDecision canPlayAndPayFor(final SpellAbility sa) {
+    protected AiPlayDecision canPlayAndPayFor(final SpellAbility sa) {
         final Card host = sa.getHostCard();
         Card altHost = host;
 
@@ -852,7 +864,7 @@ public class AiController {
     }
 
     // This is for playing spells regularly (no Cascade/Ripple etc.)
-    private AiPlayDecision canPlayAndPayForFace(final SpellAbility sa) {
+    protected AiPlayDecision canPlayAndPayForFace(final SpellAbility sa) {
         final Card host = sa.getHostCard();
 
         if (sa.hasParam("AICheckSVar") && !aiShouldRun(sa, sa, host, null)) {
@@ -1583,7 +1595,7 @@ public class AiController {
         return chosenSa;
     }
 
-    private SpellAbility chooseSpellAbilityToPlayFromList(final List<SpellAbility> all, boolean skipCounter) {
+    public SpellAbility chooseSpellAbilityToPlayFromList(final List<SpellAbility> all, boolean skipCounter) {
         if (all == null || all.isEmpty())
             return null;
 

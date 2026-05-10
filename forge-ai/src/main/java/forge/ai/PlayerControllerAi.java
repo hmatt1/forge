@@ -54,7 +54,11 @@ import java.util.stream.Collectors;
  * Handles phase skips for now.
  */
 public class PlayerControllerAi extends PlayerController {
-    private final AiController brains;
+    private AiController brains;
+
+    public void setAiController(AiController controller) {
+        this.brains = controller;
+    }
 
     private boolean pilotsNonAggroDeck = false;
 

@@ -62,6 +62,8 @@
     </mailingLists>
 
     <modules>
+        <module>forge-proto</module>
+        <module>forge-server</module>
         <module>forge-core</module>
         <module>forge-game</module>
         <module>forge-ai</module>
