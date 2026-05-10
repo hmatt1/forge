@@ -57,7 +57,10 @@ def run_simulation(args):
             
             # Explicitly break once we have all results to avoid transport-level hangs
             if matches_run >= args.count:
+                print(f"Breaking!!!!")
                 break
+            else:
+                print(f"Not breaking?? why?")
         
         print(f"\n--- Batch Finished (Received all {matches_run} results) ---")
         print("\n--- Final Results ---")
