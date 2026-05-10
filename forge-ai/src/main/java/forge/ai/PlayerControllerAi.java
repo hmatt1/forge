@@ -820,7 +820,7 @@ public class PlayerControllerAi extends PlayerController {
     }
 
     @Override
-    public List<SpellAbility> chooseSpellAbilityToPlay() {
+    public List<SpellAbility> chooseSpellAbilityToPlay() throws Exception {
         var result = brains.chooseSpellAbilityToPlay();
         return result;
     }

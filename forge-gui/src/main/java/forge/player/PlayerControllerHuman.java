@@ -3196,7 +3196,12 @@ public class PlayerControllerHuman extends PlayerController implements IGameCont
             PlayerControllerAi ai = new PlayerControllerAi(player.getGame(), player, player.getOriginalLobbyPlayer());
             ai.setUseSimulation(useSimulation);
             player.runWithController(() -> {
-                List<SpellAbility> sas = ai.chooseSpellAbilityToPlay();
+                List<SpellAbility> sas = null;
+                try {
+                    sas = ai.chooseSpellAbilityToPlay();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 SpellAbility chosen = sas == null ? null : sas.get(0);
                 getGui().message(chosen == null ? "AI doesn't want to play anything right now" : chosen.getHostCard().toString(), "AI Play Suggestion");
             }, ai);

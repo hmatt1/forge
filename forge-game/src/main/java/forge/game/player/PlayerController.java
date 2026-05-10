@@ -236,7 +236,7 @@ public abstract class PlayerController {
     public abstract CardCollectionView londonMulliganReturnCards(Player mulliganingPlayer, int cardsToReturn);
     public abstract boolean confirmMulliganScry(final Player p);
 
-    public abstract List<SpellAbility> chooseSpellAbilityToPlay();
+    public abstract List<SpellAbility> chooseSpellAbilityToPlay() throws Exception;
     public abstract boolean playChosenSpellAbility(SpellAbility sa);
 
     public abstract List<AbilitySub> chooseModeForAbility(SpellAbility sa, List<AbilitySub> possible, int min, int num, boolean allowRepeat);

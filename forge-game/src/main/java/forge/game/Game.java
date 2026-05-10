@@ -92,7 +92,7 @@ public class Game {
     private final GameLog gameLog = new GameLog();
 
     private final Zone stackZone = new Zone(ZoneType.Stack, this);
-    public int AI_TIMEOUT = 5;
+    public int AI_TIMEOUT = 1000;
     public boolean AI_CAN_USE_TIMEOUT = true;
 
     public boolean EXPERIMENTAL_RESTORE_SNAPSHOT = false;

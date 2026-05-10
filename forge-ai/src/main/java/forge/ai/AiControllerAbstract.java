@@ -735,6 +735,10 @@ public abstract class AiControllerAbstract {
             }
         }
 
+        if (bestSA != null ) {
+            Log.info("[MJH] AI just picked to play counter spell" + bestSA.getDescription());
+        }
+
         return bestSA;
     }
 
@@ -766,6 +770,9 @@ public abstract class AiControllerAbstract {
             sa.setActivatingPlayer(player);
             Card host = sa.getHostCard();
             if (sa instanceof SpellPermanent && host != null && !host.isLand() && !ComputerUtil.castPermanentInMain1(player, sa) && ComputerUtilCost.canPayCost(sa, player, false)) {
+
+                Log.info("[MJH] AI just picked to cast in main2 " + sa.getDescription());
+
                 return sa;
             }
         }
@@ -1041,7 +1048,7 @@ public abstract class AiControllerAbstract {
         return true;
     }
 
-    public SpellAbility getSpellAbilityToPlay() {
+    public SpellAbility getSpellAbilityToPlay() throws Exception {
         if (skipped != null) {
             for (SpellAbility sa : skipped) {
                 sa.setSkip(false);
@@ -1099,10 +1106,15 @@ public abstract class AiControllerAbstract {
             return null;
         }
 
+
+        if (chosenSa != null ) {
+            Log.info("[MJH] AI just picked chosenSa " + chosenSa.getDescription());
+        }
+
         return chosenSa;
     }
 
-    public SpellAbility chooseSpellAbilityToPlayFromList(List<SpellAbility> all, boolean skipCounter) {
+    public SpellAbility chooseSpellAbilityToPlayFromList(List<SpellAbility> all, boolean skipCounter) throws Exception {
         if (all == null || all.isEmpty())
             return null;
 
@@ -1595,7 +1607,7 @@ public abstract class AiControllerAbstract {
         }
     }
 
-    public List<SpellAbility> chooseSpellAbilityToPlay() {
+    public List<SpellAbility> chooseSpellAbilityToPlay() throws Exception {
         predictedCombat = null;
         predictedCombatNextTurn = null;
 
@@ -1635,7 +1647,14 @@ public abstract class AiControllerAbstract {
             }
         }
 
-        return singleSpellAbilityList(getSpellAbilityToPlay());
+        List<SpellAbility> spellAbilities = singleSpellAbilityList(getSpellAbilityToPlay());
+        if (spellAbilities != null ) {
+            for (var sa : spellAbilities) {
+                Log.info("[MJH] AI just picked to play " + sa.getDescription());
+            }
+        }
+
+        return spellAbilities;
     }
 
     public CardCollection chooseCardsToDelve(int genericCost, CardCollection grave) {

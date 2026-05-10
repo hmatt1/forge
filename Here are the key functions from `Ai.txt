@@ -1,0 +1,82 @@
+Here are the key functions from `AiControllerAbstract` you should override with LLM decision-making, ordered by impact on game outcome:
+
+## High Priority - Combat Decisions
+```java
+// Critical for control decks - AI1 never blocked anything
+declareBlockersFor(Player defender, Combat combat)
+
+// When control needs to transition to offense
+declareAttackers(Player attacker, Combat combat) 
+```
+
+## High Priority - Resource Management
+```java
+// What to discard when forced (hand size, opponent effects)
+getCardsToDiscard(int numDiscard, String[] uTypes, SpellAbility sa, CardCollectionView exclude)
+
+// What to sacrifice to effects
+chooseSacrificeType(String type, SpellAbility ability, boolean effect, int amount, CardCollectionView exclude)
+
+// Numeric decisions (X spells, bidding, etc.)
+chooseNumber(SpellAbility sa, String title, int min, int max)
+chooseNumber(SpellAbility sa, String title, List<Integer> options, Player relatedPlayer)
+```
+
+## Medium Priority - Strategic Decisions
+```java
+// Whether to use optional triggered abilities
+doTrigger(SpellAbility spell, boolean mandatory)
+
+// Whether to use replacement effects
+aiShouldRun(ReplacementEffect effect, SpellAbility sa, GameEntity affected)
+
+// Whether to proceed with certain actions
+confirmAction(SpellAbility sa, PlayerActionConfirmMode mode, String message, Map<String, Object> params)
+
+// Multi-card selection effects
+chooseCardsForEffect(CardCollectionView pool, SpellAbility sa, int min, int max, boolean isOptional, Map<String, Object> params)
+```
+
+## Medium Priority - Card Selection
+```java
+// Tutoring and searching effects  
+chooseCardToHiddenOriginChangeZone(ZoneType destination, List<ZoneType> origin, SpellAbility sa, CardCollection fetchList, Player player2, Player decider)
+
+// Which counter spell to use (enhance existing logic)
+chooseCounterSpell(List<SpellAbility> possibleCounters)
+
+// Delve decisions
+chooseCardsToDelve(int genericCost, CardCollection grave)
+```
+
+## Lower Priority - Specialized Decisions
+```java
+// Modal spell choices
+chooseModeForAbility(SpellAbility sa, List<AbilitySub> possible, int min, int num, boolean allowRepeat)
+
+// When multiple replacement effects apply
+chooseSingleReplacementEffect(List<ReplacementEffect> list)
+
+// Binary choices
+chooseDirection(SpellAbility sa)
+chooseEvenOdd(SpellAbility sa)
+```
+
+## Implementation Notes
+
+**For `declareBlockersFor`**: This is your biggest win. Control decks live or die by blocking decisions. The LLM can evaluate:
+- Life total pressure
+- Trading creature value
+- Preserving key threats
+- Setting up favorable trades
+
+**For `getCardsToDiscard`**: Control decks need sophisticated discard logic - what to keep for answers vs. what to pitch.
+
+**For `chooseNumber`**: X-spells and variable effects are common in control - the LLM can optimize these based on game state.
+
+**Consider Enhanced Context**: For these overrides, you may want to pass additional context to the LLM beyond what's in the base `GameStateDto`, such as:
+- Opponent's likely next plays
+- Current win/loss probability
+- Resource constraints over next few turns
+
+The `declareBlockersFor` override alone would likely have changed the game outcome significantly, as AI1 took 19+ damage from unblocked creatures.

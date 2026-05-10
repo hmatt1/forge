@@ -15,7 +15,7 @@ public class MattPlayerControllerAi extends PlayerControllerAi {
     }
 
     @Override
-    public List<SpellAbility> chooseSpellAbilityToPlay() {
+    public List<SpellAbility> chooseSpellAbilityToPlay() throws Exception {
         var result = super.chooseSpellAbilityToPlay();
          return result;
     }

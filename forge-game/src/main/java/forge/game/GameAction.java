@@ -2270,10 +2270,10 @@ public class GameAction {
         return Math.abs(averageCount-landCount);
     }
 
-    public void startGame(GameOutcome lastGameOutcome) {
+    public void startGame(GameOutcome lastGameOutcome) throws Exception {
         startGame(lastGameOutcome, null);
     }
-    public void startGame(GameOutcome lastGameOutcome, Runnable startGameHook) {
+    public void startGame(GameOutcome lastGameOutcome, Runnable startGameHook) throws Exception {
         Player first = determineFirstTurnPlayer(lastGameOutcome);
 
         GameType gameType = game.getRules().getGameType();

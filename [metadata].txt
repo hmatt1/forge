@@ -1,0 +1,103 @@
+[metadata]
+Name=Deck_998
+[Main]
+4 Duress
+6 Swamp
+4 Hopeless Nightmare
+1 Tinybones, the Pickpocket
+1 Bandit's Talent
+2 Bloodghast
+4 Deep-Cavern Bat
+4 Nowhere to Run
+3 Stormchaser's Talent
+6 Island
+4 Get Out
+4 This Town Ain't Big Enough
+1 Sleep-Cursed Faerie
+4 Three Steps Ahead
+4 Fear of Isolation
+1 Darkslick Shores
+1 Temple of Deceit
+1 Undercity Sewers
+3 Gloomlake Verge
+1 Restless Reef
+1 Underground River
+
+Oracle text for non-lands cards in the deck:
+
+Duress {B}
+Sorcery
+Target opponent reveals their hand. You choose a noncreature, nonland card from it. That player discards that card.
+
+Hopeless Nightmare {B}
+Enchantment
+When this enchantment enters, each opponent discards a card and loses 2 life.
+When this enchantment is put into a graveyard from the battlefield, scry 2.
+{2}{B}: Sacrifice this enchantment.
+
+Deep-Cavern Bat {1}{B}
+Creature — Bat
+Flying, lifelink
+When this creature enters, look at target opponent's hand. You may exile a nonland card from it until this creature leaves the battlefield.
+1/1
+
+Tinybones, the Pickpocket {B}
+Legendary Creature — Skeleton Rogue
+Deathtouch
+Whenever Tinybones deals combat damage to a player, you may cast target nonland permanent card from that player's graveyard, and mana of any type can be spent to cast that spell.
+1/1
+
+Bloodghast {B}{B}
+Creature — Vampire Spirit
+This creature can't block.
+This creature has haste as long as an opponent has 10 or less life.
+Landfall — Whenever a land you control enters, you may return this card from your graveyard to the battlefield.
+2/1
+
+Bandit's Talent {1}{B}
+Enchantment — Class
+(Gain the next level as a sorcery to add its ability.)
+When this Class enters, each opponent discards two cards unless they discard a nonland card.
+{B}: Level 2
+At the beginning of each opponent's upkeep, if that player has one or fewer cards in hand, they lose 2 life.
+{3}{B}: Level 3
+At the beginning of your draw step, draw an additional card for each opponent who has one or fewer cards in hand.
+
+Nowhere to Run {1}{B}
+Enchantment
+Flash
+When this enchantment enters, target creature an opponent controls gets -3/-3 until end of turn.
+Creatures your opponents control can be the targets of spells and abilities as though they didn't have hexproof. Ward abilities of those creatures don't trigger.
+
+Stormchaser's Talent {U}
+Enchantment — Class
+(Gain the next level as a sorcery to add its ability.)
+When this Class enters, create a 1/1 blue and red Otter creature token with prowess.
+{3}{U}: Level 2
+When this Class becomes level 2, return target instant or sorcery card from your graveyard to your hand.
+{5}{U}: Level 3
+Whenever you cast an instant or sorcery spell, create a 1/1 blue and red Otter creature token with prowess.
+
+Get Out {U}{U}
+Instant
+Choose one —
+• Counter target creature or enchantment spell.
+• Return one or two target creatures and/or enchantments you own to your hand.
+
+This Town Ain't Big Enough {4}{U}
+Instant
+This spell costs {3} less to cast if it targets a permanent you control.
+Return up to two target nonland permanents to their owners' hands.
+
+Three Steps Ahead {U}
+Instant
+Spree (Choose one or more additional costs.)
++ {1}{U} — Counter target spell.
++ {3} — Create a token that's a copy of target artifact or creature you control.
++ {2} — Draw two cards, then discard a card.
+
+Fear of Isolation {1}{U}
+Enchantment Creature — Nightmare
+As an additional cost to cast this spell, return a permanent you control to its owner's hand.
+Flying
+2/3

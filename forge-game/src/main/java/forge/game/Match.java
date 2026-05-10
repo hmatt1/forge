@@ -87,7 +87,11 @@ public class Match {
             game.fireEvent(new GameEventAnteCardsSelected(list));
         }
 
-        game.getAction().startGame(this.lastOutcome, startGameHook);
+        try {
+            game.getAction().startGame(this.lastOutcome, startGameHook);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         if (rules.useAnte()) {
             executeAnte(game);

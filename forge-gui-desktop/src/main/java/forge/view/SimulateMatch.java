@@ -177,7 +177,7 @@ public class SimulateMatch {
             TimeLimitedCodeBlock.runWithTimeout(() -> {
                 mc.startGame(g1);
                 sw.stop();
-            }, 120, TimeUnit.SECONDS);
+            }, 6000, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             System.out.println("Stopping slow match as draw");
         } catch (Exception | StackOverflowError e) {

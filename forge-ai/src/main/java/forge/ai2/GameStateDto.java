@@ -172,4 +172,23 @@ public class GameStateDto {
     }
 
     public DecisionContext decisionContext;
+
+
+    // Add to GameStateDto.java - new inner class for spell ability context
+    public static class SpellAbilityContext {
+        public String description;
+        public String stackDescription;
+        public String manaCost;
+        public boolean isInstantSpeed;
+        public String api;
+        public boolean isSpell;
+        public boolean isAbility;
+        public String hostCardName;
+        public boolean usesTargeting = false;
+        public int minTargets = 0;
+        public int maxTargets = 0;
+    }
+
+    // Add field to GameStateDto class
+    public List<SpellAbilityContext> availableSpellAbilities;
 }

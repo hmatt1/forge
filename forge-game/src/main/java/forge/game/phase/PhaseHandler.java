@@ -993,10 +993,10 @@ public class PhaseHandler implements java.io.Serializable {
 
     private final static boolean DEBUG_PHASES = false;
 
-    public void startFirstTurn(Player goesFirst) {
+    public void startFirstTurn(Player goesFirst) throws Exception {
         startFirstTurn(goesFirst, null);
     }
-    public void startFirstTurn(Player goesFirst, Runnable startGameHook) {
+    public void startFirstTurn(Player goesFirst, Runnable startGameHook) throws Exception {
         StopWatch sw = new StopWatch();
 
         if (phase != null) {
