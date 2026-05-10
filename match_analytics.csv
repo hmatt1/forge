@@ -1,0 +1,3 @@
+MatchId,Player1,Player2,Deck1,Deck2,Winner,Turns,WinReason,DNF
+Match-1,Ai-1-Deck_999,Unknown,C:\Users\Matt\IdeaProjects\decks\Deck_998.dck,C:\Users\Matt\IdeaProjects\decks\Deck_999.dck,Ai-1-Deck_999,12,AllOpponentsLost,false
+Match-0,Ai-1-Deck_999,Unknown,C:\Users\Matt\IdeaProjects\decks\Deck_998.dck,C:\Users\Matt\IdeaProjects\decks\Deck_999.dck,Ai-1-Deck_999,12,AllOpponentsLost,false

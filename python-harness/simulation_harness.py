@@ -54,8 +54,12 @@ def run_simulation(args):
                     p2_wins += 1
 
             print(f"[{matches_run}/{args.count}] Match: {result.match_id} | Status: {status} | Winner: {result.winner_name} | Turns: {result.num_turns}")
+            
+            # Explicitly break once we have all results to avoid transport-level hangs
+            if matches_run >= args.count:
+                break
         
-        print(f"\n--- Batch Finished (Stream Closed) ---")
+        print(f"\n--- Batch Finished (Received all {matches_run} results) ---")
         print("\n--- Final Results ---")
         print(f"Total Matches: {matches_run}")
         print(f"P1 Wins: {p1_wins} ({(p1_wins/matches_run)*100:.1f}%)")
@@ -65,6 +69,8 @@ def run_simulation(args):
             
     except grpc.RpcError as e:
         print(f"gRPC Error: {e.code()} - {e.details()}")
+    finally:
+        channel.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Forge Match Simulation Harness')
