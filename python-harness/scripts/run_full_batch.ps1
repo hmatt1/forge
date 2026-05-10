@@ -3,8 +3,8 @@
 
 param (
     [int]$GameCount = 100,
-    [string]$Deck1 = "forge-gui/res/adventure/Crystal_Kingdoms/decks/starter/Adventure - Angelo Cannon.dck",
-    [string]$Deck2 = "forge-gui/res/adventure/Crystal_Kingdoms/decks/starter/Adventure - Guardian Gladiolus.dck"
+    [string]$Deck1 = "C:\Users\Matt\IdeaProjects\decks\Deck_998.dck",
+    [string]$Deck2 = "C:\Users\Matt\IdeaProjects\decks\Deck_999.dck"
 )
 
 Write-Host "--- Starting Full Benchmark Lifecycle ($GameCount games) ---" -ForegroundColor Cyan
