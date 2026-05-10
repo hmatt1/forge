@@ -5,7 +5,9 @@ import simulation_pb2_grpc
 
 def run_simulation(args):
     # Connect to Forge Server
-    channel = grpc.insecure_channel(args.forge_server)
+    # Set a timeout for the channel to avoid getting stuck indefinitely
+    options = [('grpc.client_idle_timeout_ms', 30000)]
+    channel = grpc.insecure_channel(args.forge_server, options=options)
     stub = simulation_pb2_grpc.MatchSimulationServiceStub(channel)
     
     # Configure AI types

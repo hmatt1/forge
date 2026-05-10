@@ -132,10 +132,18 @@ public class ForgeServer {
                         }
                     } finally {
                         int rem = remaining.decrementAndGet();
-                        if (rem == 0) {
-                            System.out.println("All matches finished. Sending onCompleted signal.");
+                        if (rem % 10 == 0 || rem < 5) {
+                            System.out.println("Matches remaining: " + rem);
+                        }
+                        if (rem <= 0) {
+                            System.out.println("All matches finished according to counter. Sending onCompleted signal.");
                             synchronized (responseObserver) {
-                                responseObserver.onCompleted();
+                                try {
+                                    responseObserver.onCompleted();
+                                    System.out.println("onCompleted signal sent successfully.");
+                                } catch (Exception e) {
+                                    System.err.println("Failed to send onCompleted: " + e.getMessage());
+                                }
                             }
                         }
                     }
