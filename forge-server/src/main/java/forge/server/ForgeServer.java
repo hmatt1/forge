@@ -97,7 +97,16 @@ public class ForgeServer {
     static class MatchSimulationServiceImpl extends MatchSimulationServiceGrpc.MatchSimulationServiceImplBase {
 
         private final ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        private final MatchTelemetryLogger telemetryLogger = new MatchTelemetryLogger("match_analytics.csv");
+        private final MatchTelemetryLogger telemetryLogger;
+
+        public MatchSimulationServiceImpl() {
+            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+            java.io.File resultsDir = new java.io.File("simulation_results");
+            if (!resultsDir.exists()) {
+                resultsDir.mkdirs();
+            }
+            this.telemetryLogger = new MatchTelemetryLogger("simulation_results/match_analytics_" + timestamp + ".csv");
+        }
 
         @Override
         public void runSimulation(SimulationRequest request, StreamObserver<SimulationResponse> responseObserver) {
