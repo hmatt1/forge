@@ -53,6 +53,7 @@ def run_simulation(args):
 
             print(f"[{matches_run}/{args.count}] Match: {result.match_id} | Status: {status} | Winner: {result.winner_name} | Turns: {result.num_turns}")
         
+        print(f"\n--- Batch Finished (Stream Closed) ---")
         print("\n--- Final Results ---")
         print(f"Total Matches: {matches_run}")
         print(f"P1 Wins: {p1_wins} ({(p1_wins/matches_run)*100:.1f}%)")

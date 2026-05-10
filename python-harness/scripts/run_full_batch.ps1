@@ -2,7 +2,7 @@
 # This script starts the Forge Server and Inference Server, runs 100 games, and then shuts everything down.
 
 param (
-    [int]$GameCount = 100,
+    [int]$GameCount = 10,
     [string]$Deck1 = "C:\Users\Matt\IdeaProjects\decks\Deck_998.dck",
     [string]$Deck2 = "C:\Users\Matt\IdeaProjects\decks\Deck_999.dck"
 )

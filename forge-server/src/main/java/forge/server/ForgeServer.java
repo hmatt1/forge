@@ -120,6 +120,7 @@ public class ForgeServer {
         public void runSimulationStream(SimulationRequest request, StreamObserver<MatchResult> responseObserver) {
             int numMatches = request.getNumMatches();
             java.util.concurrent.atomic.AtomicInteger remaining = new java.util.concurrent.atomic.AtomicInteger(numMatches);
+            System.out.println("Starting simulation stream for " + numMatches + " matches.");
 
             for (int i = 0; i < numMatches; i++) {
                 final int matchIdx = i;
@@ -130,7 +131,9 @@ public class ForgeServer {
                             responseObserver.onNext(result);
                         }
                     } finally {
-                        if (remaining.decrementAndGet() == 0) {
+                        int rem = remaining.decrementAndGet();
+                        if (rem == 0) {
+                            System.out.println("All matches finished. Sending onCompleted signal.");
                             synchronized (responseObserver) {
                                 responseObserver.onCompleted();
                             }
